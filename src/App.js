@@ -7,7 +7,7 @@ function App() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    fetch("http://192.168.88.10:8000/")
+    fetch("https://backend-52c7fa59.fastapicloud.dev/")
       .then((response) => response.json())
       .then((data) => setMessage(data.message));
   }, []);
