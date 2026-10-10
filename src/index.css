@@ -1,13 +1,53 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-sage-dark: 92 112 87; /* #5C7057 */
+  --color-sage: 137 164 130; /* #89A482 */
+  --color-sage-light: 172 197 166; /* #ACC5A6 */
+  --color-sage-pale: 209 237 211; /* #D1EDD3 */
+  --color-ink: 28 42 31;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+@layer base {
+  body {
+    @apply m-0 bg-[#fafbf8] text-ink antialiased;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  }
+
+  a, button {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid rgb(var(--color-sage-dark));
+    outline-offset: 5px;
+  }
+
+  h1 {
+    @apply mb-4 text-3xl font-semibold tracking-tight;
+  }
+
+  code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, monospace;
+  }
+}
+
+@layer components {
+  .auth-card {
+    @apply mx-auto my-4 max-w-md rounded-3xl border border-sage-200/60 bg-white p-6 shadow-sm sm:my-8 sm:p-10;
+  }
+  .auth-eyebrow {
+    @apply mb-3 text-xs font-semibold uppercase tracking-widest text-sage-700;
+  }
+  .auth-label {
+    @apply mb-2 block text-sm font-medium text-ink;
+  }
+  .auth-input {
+    @apply w-full rounded-xl border border-sage-200 bg-white px-4 py-3 text-ink focus:border-sage-700 focus:outline-none focus:ring-2 focus:ring-sage-200;
+  }
+  .auth-button {
+    @apply w-full rounded-full bg-sage-700 px-6 py-3 font-semibold text-white transition-colors hover:bg-ink disabled:cursor-wait disabled:opacity-60;
+  }
 }
