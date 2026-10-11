@@ -3,9 +3,27 @@ import axios from "axios";
 const endpoint = "https://backend-52c7fa59.fastapicloud.dev";
 
 function loginAPI(email, password) {
-  return axios.post(`${endpoint}/users/login`, { email, password });
+  return axios.post(`${endpoint}/users/login`, {
+    email,
+    password,
+  });
 }
-// API integration will be implemented later.
+
+function registerUserAPI(email, password, first_name, last_name, phone) {
+  const role = 0;
+  const address = "";
+  const status = true;
+  return axios.post(`${endpoint}/users/`, {
+    email,
+    password,
+    first_name,
+    last_name,
+    role,
+    status,
+    address,
+    phone,
+  });
+}
 
 // export function registerAPI(credentials) {
 //   return sendCredentials("register", credentials);
@@ -32,7 +50,7 @@ function loginAPI(email, password) {
 // }
 
 export default {
-  // registerAPI,
+  registerUserAPI,
   loginAPI,
   // changepwdAPI,
   // forgotpwdAPI,

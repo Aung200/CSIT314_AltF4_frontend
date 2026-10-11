@@ -1,47 +1,47 @@
-import { Link, useLocation } from "react-router-dom";
+//libraries
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+//components
+import { ToastContainer, toast } from "react-toastify";
+//api(controllers)
 import API from "../../../api/api";
 
-function Login() {
-  const location = useLocation();
-  const [error, setError] = useState("");
-
+function Login({onLogin}) {
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setError("");
+    setLoading(true);
     const form = new FormData(event.currentTarget);
     const email = form.get("Email");
     const password = form.get("Password");
 
     try {
       const response = await API.loginAPI(email, password);
-      console.log("Logged in:", response.data);
+      onLogin();
+      localStorage.setItem("role", response.data.role);
+      setTimeout(() => {
+        navigate("/");
+      }, 1500);
     } catch (error) {
-      const data = error.response?.data;
-      const detail = data?.detail;
-      const message = typeof detail === "string"
-        ? detail
-        : detail?.message || data?.message || "Unable to log in. Please try again.";
-      setError(message);
-      if (data) console.log("Login response:", data);
+      const message =
+        error.response?.data?.detail?.message ||
+        error.response?.data?.message ||
+        error.message ||
+        "Unable to log in. Please try again.";
+      toast.error(message, { autoClose: 5000 });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <section className="auth-card" aria-labelledby="login-title">
+      <ToastContainer />
       <p className="auth-eyebrow">Welcome back</p>
       <h1 id="login-title">Login</h1>
       <p className="mb-8 text-ink/70">Your next home project starts here.</p>
-      {location.state?.registered && (
-        <p
-          role="status"
-          className="mb-4 rounded-lg bg-sage-50 p-3 text-sage-700"
-        >
-          Account created. You can now log in.
-        </p>
-      )}
-      {error && <p role="alert" className="mb-4 text-red-700">{error}</p>}
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
           <label htmlFor="login-email" className="auth-label">
@@ -69,8 +69,8 @@ function Login() {
             className="auth-input"
           />
         </div>
-        <button type="submit" className="auth-button">
-          Login
+        <button type="submit" className="auth-button" disabled={loading}>
+          {loading ? "Loading..." : "Login"}
         </button>
       </form>
       <p className="mt-6 text-center text-sm text-ink/70">

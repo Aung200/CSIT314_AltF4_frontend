@@ -4,20 +4,14 @@ const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem("isLoggedIn") === "true");
-  const [hasRegistered, setHasRegistered] = useState(() => localStorage.getItem("hasRegistered") === "true");
-
-  function handleLogin() {
+ 
+  function setLogin() {
     localStorage.setItem("isLoggedIn", "true");
     setIsLoggedIn(true);
   }
 
-  function handleRegister() {
-    localStorage.setItem("hasRegistered", "true");
-    setHasRegistered(true);
-  }
-
   return (
-    <AuthContext.Provider value={{ isLoggedIn, hideAuthLink: isLoggedIn || hasRegistered, handleLogin, handleRegister }}>
+    <AuthContext.Provider value={{ isLoggedIn, hideAuthLink: isLoggedIn , setLogin }}>
       {children}
     </AuthContext.Provider>
   );
