@@ -13,7 +13,7 @@ function registerUserAPI(email, password, first_name, last_name, phone) {
   const role = 0;
   const address = "";
   const status = true;
-  return axios.post(`${endpoint}/users/`, {
+  return axios.post(`${endpoint}/users/register`, {
     email,
     password,
     first_name,
@@ -23,6 +23,12 @@ function registerUserAPI(email, password, first_name, last_name, phone) {
     address,
     phone,
   });
+}
+
+function logoutAPI() {
+  localStorage.removeItem("isLoggedIn");
+  localStorage.removeItem("role");
+  localStorage.removeItem("profile");
 }
 
 // export function registerAPI(credentials) {
@@ -52,6 +58,7 @@ function registerUserAPI(email, password, first_name, last_name, phone) {
 export default {
   registerUserAPI,
   loginAPI,
+  logoutAPI,
   // changepwdAPI,
   // forgotpwdAPI,
 

@@ -19,8 +19,7 @@ function Login({onLogin}) {
 
     try {
       const response = await API.loginAPI(email, password);
-      onLogin();
-      localStorage.setItem("role", response.data.role);
+      onLogin(response.data.user);
       setTimeout(() => {
         navigate("/");
       }, 1500);

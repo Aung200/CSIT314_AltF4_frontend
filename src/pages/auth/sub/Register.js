@@ -28,8 +28,7 @@ function Register({onRegister}) {
         last_name,
         phone,
       );
-      onRegister();
-      localStorage.setItem("profile", JSON.stringify(response.data));
+      onRegister(response.data.user);
       setTimeout(() => {
         navigate("/");
       }, 2000);
