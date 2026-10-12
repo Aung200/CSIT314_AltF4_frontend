@@ -112,6 +112,7 @@ function Register({onRegister}) {
             name="Password"
             type="password"
             autoComplete="new-password"
+            minLength={8}
             required
             className="auth-input"
           />

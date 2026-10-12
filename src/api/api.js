@@ -10,17 +10,11 @@ function loginAPI(email, password) {
 }
 
 function registerUserAPI(email, password, first_name, last_name, phone) {
-  const role = 0;
-  const address = "";
-  const status = true;
   return axios.post(`${endpoint}/users/register`, {
     email,
     password,
     first_name,
     last_name,
-    role,
-    status,
-    address,
     phone,
   });
 }
@@ -51,8 +45,8 @@ function logoutAPI() {
   localStorage.removeItem("profile");
 }
 
-function getUserDetails(email){
-  return axios.get(`${endpoint}/users/${email}`);
+function getUserDetails(id) {
+  return axios.get(`${endpoint}/users/${id}`);
 }
 
 // export function registerAPI(credentials) {

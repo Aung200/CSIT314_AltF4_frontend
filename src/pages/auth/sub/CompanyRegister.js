@@ -145,6 +145,7 @@ function CompanyRegister({ onRegister }) {
             name="password"
             type="password"
             autoComplete="new-password"
+            minLength={8}
             required
             className="auth-input"
           />
