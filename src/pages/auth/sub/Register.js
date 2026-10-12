@@ -45,7 +45,7 @@ function Register({onRegister}) {
   };
 
   return (
-    <section className="auth-card" aria-labelledby="register-title">
+    <section className="auth-card sm:max-w-2xl" aria-labelledby="register-title">
       <ToastContainer />
       <p className="auth-eyebrow">Make yourself at home</p>
       <h1 id="register-title">Sign up</h1>
@@ -121,12 +121,12 @@ function Register({onRegister}) {
         </button>
       </form>
       <div className="mt-6 border-t border-sage-200/60 pt-6 text-center">
-        <p className="mb-3 text-sm text-ink/70">Joining as a professional?</p>
+        <p className="mb-3 text-sm text-ink/70">Registering a business?</p>
         <Link
-          to="/auth/register/agent"
+          to="/auth/register/company"
           className="inline-flex w-full justify-center rounded-full border border-sage-700 px-6 py-3 font-semibold text-sage-700 transition-colors hover:bg-sage-50"
         >
-          Register as an agent
+          Register your company
         </Link>
       </div>
       <p className="mt-6 text-center text-sm text-ink/70">

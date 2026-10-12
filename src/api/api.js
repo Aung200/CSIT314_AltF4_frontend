@@ -25,6 +25,26 @@ function registerUserAPI(email, password, first_name, last_name, phone) {
   });
 }
 
+function registerCompanyAPI(
+  name,
+  description,
+  phone,
+  email,
+  website,
+  address,
+  password,
+) {
+  return axios.post(`${endpoint}/companies/register`, {
+    name,
+    description,
+    phone,
+    email,
+    website,
+    address,
+    password,
+  });
+}
+
 function logoutAPI() {
   localStorage.removeItem("isLoggedIn");
   localStorage.removeItem("role");
@@ -56,8 +76,9 @@ function logoutAPI() {
 // }
 
 export default {
-  registerUserAPI,
   loginAPI,
+  registerUserAPI,
+  registerCompanyAPI,
   logoutAPI,
   // changepwdAPI,
   // forgotpwdAPI,
