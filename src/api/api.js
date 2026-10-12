@@ -51,6 +51,10 @@ function logoutAPI() {
   localStorage.removeItem("profile");
 }
 
+function getUserDetails(email){
+  return axios.get(`${endpoint}/users/${email}`);
+}
+
 // export function registerAPI(credentials) {
 //   return sendCredentials("register", credentials);
 // }
@@ -80,6 +84,7 @@ export default {
   registerUserAPI,
   registerCompanyAPI,
   logoutAPI,
+  getUserDetails,
   // changepwdAPI,
   // forgotpwdAPI,
 

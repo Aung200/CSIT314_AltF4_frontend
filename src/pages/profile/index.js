@@ -1,8 +1,12 @@
+import { Navigate, Route, Routes } from "react-router-dom";
+import ProfileDetails from "./sub/ProfileDetails";
+
 function Profile() {
   return (
-    <section className="mx-auto max-w-3xl py-6 sm:py-10">
-      <p>This is profile page</p>
-    </section>
+    <Routes>
+      <Route index element={<Navigate to="details" replace />} />
+      <Route path="/details" element={<ProfileDetails />} />
+    </Routes>
   );
 }
 
