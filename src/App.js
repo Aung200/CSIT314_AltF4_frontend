@@ -6,6 +6,7 @@ import Header from "./layout/header/index";
 import Footer from "./layout/footer/index";
 //pages
 const Auth = lazy(() => import("./pages/auth/index"));
+const Profile = lazy(() => import("./pages/profile/index"));
 const Home = lazy(() => import("./pages/home/index"));
 const PageNotFound = lazy(() => import("./pages/error/index"));
 
@@ -24,6 +25,7 @@ function App() {
           <Route path="/designs" element={<><h1>Interior Designs</h1><p>Explore inspiring spaces. Designs coming soon.</p></>} />
           <Route path="/companies" element={<><h1>Companies</h1><p>Find the right professionals for your home. Directory coming soon.</p></>} />
           <Route path="/auth/*" element={<Auth />} />
+          <Route path="/profile/*" element={<Profile />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/policy" element={<Policy />} />
