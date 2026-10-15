@@ -34,7 +34,6 @@ function CompanyRegister({ onRegister }) {
         password,
       );
       onRegister(response.data.company);
-      console.log(response)
       setTimeout(() => {
         navigate("/");
       }, 2000);

@@ -2,6 +2,8 @@ import axios from "axios";
 
 const endpoint = "https://backend-52c7fa59.fastapicloud.dev";
 
+
+//Authentication APIs
 function loginAPI(email, password) {
   return axios.post(`${endpoint}/users/login`, {
     email,
@@ -39,51 +41,64 @@ function registerCompanyAPI(
   });
 }
 
+function updatePasswordAPI(id, new_password) {
+  return axios.put(`${endpoint}/users/update-password/${id}`, {
+    new_password,
+  });
+}
+
 function logoutAPI() {
   localStorage.removeItem("isLoggedIn");
   localStorage.removeItem("role");
   localStorage.removeItem("profile");
 }
 
+//User Profile APIs
 function getUserDetails(id) {
-  return axios.get(`${endpoint}/users/${id}`);
+  return axios.get(`${endpoint}/users/id/${id}`);
 }
 
-// export function registerAPI(credentials) {
-//   return sendCredentials("register", credentials);
-// }
+function updateUserProfileAPI(id, first_name, last_name, address, phone) {
+  console.log("Updating profile with data:", { id, first_name, last_name, address, phone });
+  return axios.put(`${endpoint}/users/update/${id}`, {
+    first_name,
+    last_name,
+    address,
+    phone,
+  });
+}
 
-// export function registerAgentAPI(credentials) {
-//   const url = process.env.REACT_APP_AGENT_REGISTER_URL;
-//   if (!url) {
-//     return Promise.reject(new Error("Agent registration is not available yet. Please try again later."));
-//   }
-//   return sendCredentials("register", credentials, url);
-// }
+//Company Profile APIs
+function getCompanyDetails(id) {
+  return axios.get(`${endpoint}/companies/${id}`);
+}
 
-// export async function getCompaniesAPI(signal) {
-//   const url = process.env.REACT_APP_COMPANIES_URL;
-//   if (!url) throw new Error("The company list is currently unavailable.");
-//   const response = await fetch(url, { signal });
-//   if (!response.ok) throw new Error("Unable to load companies. Please try again.");
-//   const companies = await response.json();
-//   if (!Array.isArray(companies) || companies.some((company) => !company || company.id == null || typeof company.name !== "string")) {
-//     throw new Error("Unable to load companies. Please try again.");
-//   }
-//   return companies;
-// }
+function updateCompanyProfileAPI(id, name, description, phone, website, address) {
+  return axios.post(`${endpoint}/companies/update`, {
+    name,
+    description,
+    phone,
+    website,
+    address,
+  }, { params: { id } });
+}
 
 export default {
   loginAPI,
   registerUserAPI,
   registerCompanyAPI,
+  updatePasswordAPI,
   logoutAPI,
+  
   getUserDetails,
+  updateUserProfileAPI,
+  
+  getCompanyDetails,
+  updateCompanyProfileAPI,
   // changepwdAPI,
   // forgotpwdAPI,
 
   // userAPI,
-  // updateProfileAPI,
 
   // createProduct,
   // updateProduct,
