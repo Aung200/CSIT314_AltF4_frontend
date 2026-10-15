@@ -1,6 +1,6 @@
 //libraries
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 //api(controller)
 import API from "../../../api/api";
 //context
@@ -10,16 +10,30 @@ import { Pencil, Save, X } from "lucide-react";
 import { ToastContainer, toast } from "react-toastify";
 
 function CompanyProfileDetails() {
-  const { isLoggedIn, profile } = useAuth();
+  const { isLoggedIn, profile, logout } = useAuth();
+  const navigate = useNavigate();
   const [editing, setEditing] = useState(false);
   const [details, setDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [changingPassword, setChangingPassword] = useState(false);
+  const [logoutPending, setLogoutPending] = useState(false);
   const [error, setError] = useState("");
   const [retry, setRetry] = useState(0);
   const id = profile?.id;
   const email = profile?.email;
+  const busy = saving || changingPassword || logoutPending;
+
+  useEffect(() => {
+    if (!logoutPending) return undefined;
+
+    const timeout = setTimeout(() => {
+      logout();
+      navigate("/auth/login", { replace: true });
+    }, 2000);
+
+    return () => clearTimeout(timeout);
+  }, [logoutPending, logout, navigate]);
 
   useEffect(() => {
     if (!isLoggedIn || id == null) {
@@ -96,13 +110,13 @@ function CompanyProfileDetails() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (saving) return;
+    if (busy) return;
     const form = new FormData(event.currentTarget);
     const name = form.get("name").trim();
     const description = form.get("description").trim() || null;
+    const phone = form.get("phone").trim() || null;
     const website = form.get("website").trim() || null;
     const address = form.get("address").trim() || null;
-    const phone = form.get("phone").trim() || null;
 
     setSaving(true);
     try {
@@ -119,8 +133,7 @@ function CompanyProfileDetails() {
         response.data?.message ||
         "Profile updated successfully.";
       toast.success(message, { autoClose: 5000 });
-      setEditing(false);
-      setRetry((attempt) => attempt + 1);
+      setLogoutPending(true);
     } catch (error) {
       const message =
         error.response?.data?.detail?.message ||
@@ -135,7 +148,7 @@ function CompanyProfileDetails() {
 
   const handlePasswordSubmit = async (event) => {
     event.preventDefault();
-    if (changingPassword) return;
+    if (busy) return;
     const passwordForm = event.currentTarget;
     const form = new FormData(passwordForm);
     const new_password = form.get("new_password");
@@ -149,6 +162,7 @@ function CompanyProfileDetails() {
         "Password changed successfully.";
       toast.success(message, { autoClose: 5000 });
       passwordForm.reset();
+      setLogoutPending(true);
     } catch (error) {
       const message =
         error.response?.data?.detail?.message ||
@@ -173,6 +187,7 @@ function CompanyProfileDetails() {
           <button
             type="button"
             onClick={handleEdit}
+            disabled={busy}
             className="inline-flex items-center gap-2 rounded-lg px-3 py-2 font-semibold text-sage-700 hover:bg-sage-100"
           >
             <Pencil size={18} /> Edit
@@ -182,6 +197,11 @@ function CompanyProfileDetails() {
       <p className="mb-8 text-ink/70">
         View and edit your company information.
       </p>
+      {logoutPending && (
+        <p role="status" className="mb-6 text-sage-700">
+          Update successful. Redirecting to login...
+        </p>
+      )}
 
       {loading && (
         <p role="status" className="text-ink/70">
@@ -204,17 +224,40 @@ function CompanyProfileDetails() {
         <form key={editing ? "edit" : "view"} onSubmit={handleSubmit}>
           <div className="grid gap-x-6 gap-y-5 sm:grid-cols-2">
             {[
-              { name: "name", label: "Company name", autoComplete: "organization", required: true },
+              {
+                name: "name",
+                label: "Company name",
+                autoComplete: "organization",
+                required: true,
+              },
               { name: "description", label: "Description", multiline: true },
-              { name: "phone", label: "Phone number", type: "tel", autoComplete: "tel" },
+              {
+                name: "phone",
+                label: "Phone number",
+                type: "tel",
+                autoComplete: "tel",
+              },
               { name: "email", label: "Email", readOnly: true },
-              { name: "website", label: "Website", type: "url", autoComplete: "url" },
-              { name: "address", label: "Address", multiline: true, autoComplete: "street-address" },
+              {
+                name: "website",
+                label: "Website",
+                type: "url",
+                autoComplete: "url",
+              },
+              {
+                name: "address",
+                label: "Address",
+                multiline: true,
+                autoComplete: "street-address",
+              },
             ].map((field) => (
               <div key={field.name}>
                 {editing && !field.readOnly ? (
                   <>
-                    <label htmlFor={`company-${field.name}`} className="auth-label">
+                    <label
+                      htmlFor={`company-${field.name}`}
+                      className="auth-label"
+                    >
                       {field.label}
                     </label>
                     {field.multiline ? (
@@ -223,7 +266,7 @@ function CompanyProfileDetails() {
                         name={field.name}
                         defaultValue={profileDetails[field.name] || ""}
                         autoComplete={field.autoComplete}
-                        disabled={saving}
+                        disabled={busy}
                         rows={3}
                         className="auth-input"
                       />
@@ -235,7 +278,7 @@ function CompanyProfileDetails() {
                         autoComplete={field.autoComplete}
                         defaultValue={profileDetails[field.name] || ""}
                         required={field.required}
-                        disabled={saving}
+                        disabled={busy}
                         autoFocus={field.name === "name"}
                         className="auth-input"
                       />
@@ -243,9 +286,13 @@ function CompanyProfileDetails() {
                   </>
                 ) : (
                   <>
-                    <p className="text-sm font-medium text-ink/70">{field.label}</p>
+                    <p className="text-sm font-medium text-ink/70">
+                      {field.label}
+                    </p>
                     <p className="mt-1 whitespace-pre-wrap break-words font-semibold text-ink">
-                      {profileDetails[field.name] || (field.name === "email" ? email : "") || "Not provided"}
+                      {profileDetails[field.name] ||
+                        (field.name === "email" ? email : "") ||
+                        "Not provided"}
                     </p>
                   </>
                 )}
@@ -257,14 +304,14 @@ function CompanyProfileDetails() {
               <button
                 type="button"
                 onClick={handleCancel}
-                disabled={saving}
+                disabled={busy}
                 className="inline-flex items-center gap-2 rounded-full border border-sage-200 px-5 py-2 font-semibold text-ink hover:bg-sage-100 disabled:opacity-50"
               >
                 <X size={18} /> Cancel
               </button>
               <button
                 type="submit"
-                disabled={saving}
+                disabled={busy}
                 className="inline-flex items-center gap-2 rounded-full bg-sage-700 px-5 py-2 font-semibold text-white disabled:opacity-50"
               >
                 <Save size={18} /> {saving ? "Saving..." : "Save"}
@@ -293,14 +340,14 @@ function CompanyProfileDetails() {
               autoComplete="new-password"
               minLength={8}
               required
-              disabled={changingPassword}
+              disabled={busy}
               placeholder="Enter new password"
               className="auth-input"
             />
           </div>
           <button
             type="submit"
-            disabled={changingPassword}
+            disabled={busy}
             className="mt-5 inline-flex items-center gap-2 rounded-full bg-sage-700 px-5 py-2 font-semibold text-white disabled:opacity-50"
           >
             {changingPassword ? "Changing password..." : "Change password"}

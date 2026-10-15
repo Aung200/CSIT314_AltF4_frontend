@@ -58,7 +58,6 @@ function getUserDetails(id) {
 }
 
 function updateUserProfileAPI(id, first_name, last_name, address, phone) {
-  console.log("Updating profile with data:", { id, first_name, last_name, address, phone });
   return axios.put(`${endpoint}/users/update/${id}`, {
     first_name,
     last_name,
@@ -73,13 +72,13 @@ function getCompanyDetails(id) {
 }
 
 function updateCompanyProfileAPI(id, name, description, phone, website, address) {
-  return axios.post(`${endpoint}/companies/update`, {
+  return axios.put(`${endpoint}/companies/update/${id}`, {
     name,
     description,
     phone,
     website,
     address,
-  }, { params: { id } });
+  });
 }
 
 const API = {

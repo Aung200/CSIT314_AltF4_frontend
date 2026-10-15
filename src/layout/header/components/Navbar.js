@@ -36,6 +36,13 @@ function Navbar() {
   function ProfileActions({ mobile = false }) {
     return (
       <div className={mobile ? "my-2 flex items-center gap-3 px-3" : "flex items-center gap-3 px-3"}>
+        <NavLink
+          to="/dashboard"
+          onClick={() => setOpen(false)}
+          className={linkStyle}
+        >
+          Dashboard
+        </NavLink>
         <Link
           to="/profile"
           onClick={() => setOpen(false)}
