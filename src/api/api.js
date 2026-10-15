@@ -2,7 +2,6 @@ import axios from "axios";
 
 const endpoint = "https://backend-52c7fa59.fastapicloud.dev";
 
-
 //Authentication APIs
 function loginAPI(email, password) {
   return axios.post(`${endpoint}/users/login`, {
@@ -83,7 +82,7 @@ function updateCompanyProfileAPI(id, name, description, phone, website, address)
   }, { params: { id } });
 }
 
-export default {
+const API = {
   loginAPI,
   registerUserAPI,
   registerCompanyAPI,
@@ -112,3 +111,5 @@ export default {
   // deleteProductSizeImg,
   // deleteProduct
 };
+
+export default API;
