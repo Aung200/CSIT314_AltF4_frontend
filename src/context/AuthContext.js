@@ -1,6 +1,7 @@
 //libraries
 import { createContext, useContext, useState } from "react";
-//api(Controller)
+
+//api
 import API from "../api/api";
 
 const AuthContext = createContext(null);

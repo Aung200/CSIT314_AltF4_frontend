@@ -1,11 +1,12 @@
 //libraries
 import { Link } from "react-router-dom";
+
 //components
 import { Plus, Users } from "lucide-react";
 
 function CompanyDashboard() {
   return (
-    <section className="auth-card sm:max-w-3xl" aria-labelledby="dashboard-title">
+    <section className="auth-card w-full max-w-none" aria-labelledby="dashboard-title">
       <p className="auth-eyebrow">Company dashboard</p>
       <div className="flex flex-wrap items-start justify-between gap-4">
         <h1 id="dashboard-title">Employees</h1>

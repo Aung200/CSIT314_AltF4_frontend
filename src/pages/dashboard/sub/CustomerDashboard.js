@@ -1,5 +1,6 @@
+//components
 import { Heart } from "lucide-react";
-import DashboardOverview from "./DashboardOverview";
+import DashboardOverview from "../components/DashboardOverview";
 
 function CustomerDashboard() {
   return (

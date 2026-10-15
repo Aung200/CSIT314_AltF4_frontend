@@ -1,6 +1,7 @@
 //libraries
 import { Navigate, Route, Routes } from "react-router-dom";
-//components
+
+//pages
 import ProfileDetails from "./sub/ProfileDetails";
 import CompanyProfileDetails from "./sub/CompanyProfileDetails";
 

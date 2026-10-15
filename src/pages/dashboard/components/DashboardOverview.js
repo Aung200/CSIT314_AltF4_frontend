@@ -1,6 +1,6 @@
 function DashboardOverview({ eyebrow, title, description, sections = [] }) {
   return (
-    <section className="auth-card sm:max-w-3xl" aria-labelledby="dashboard-title">
+    <section className="auth-card w-full max-w-none" aria-labelledby="dashboard-title">
       <p className="auth-eyebrow">{eyebrow}</p>
       <h1 id="dashboard-title">{title}</h1>
       <p className="mb-8 text-ink/70">{description}</p>

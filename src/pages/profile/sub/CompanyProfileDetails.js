@@ -1,13 +1,16 @@
 //libraries
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-//api(controller)
-import API from "../../../api/api";
-//context
-import { useAuth } from "../../../context/AuthContext";
+
 //components
 import { Pencil, Save, X } from "lucide-react";
 import { ToastContainer, toast } from "react-toastify";
+
+//api
+import API from "../../../api/api";
+
+//context
+import { useAuth } from "../../../context/AuthContext";
 
 function CompanyProfileDetails() {
   const { isLoggedIn, profile, logout } = useAuth();
@@ -47,7 +50,7 @@ function CompanyProfileDetails() {
 
     const loadProfile = async () => {
       try {
-        const response = await API.getCompanyDetails(id);
+        const response = await API.getCompanyDetailsAPI(id);
         if (!isActive) return;
         const company = response.data?.company ?? response.data;
         if (!company || typeof company !== "object" || Array.isArray(company)) {

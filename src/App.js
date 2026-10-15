@@ -1,6 +1,7 @@
 //libraries
 import { Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
+
 //components
 import Header from "./layout/header/index";
 import Footer from "./layout/footer/index";

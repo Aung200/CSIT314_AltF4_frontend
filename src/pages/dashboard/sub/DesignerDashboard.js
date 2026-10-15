@@ -1,5 +1,6 @@
+//components
 import { Bell, Eye, Images, MessageCircle } from "lucide-react";
-import DashboardOverview from "./DashboardOverview";
+import DashboardOverview from "../components/DashboardOverview";
 
 function DesignerDashboard() {
   return (

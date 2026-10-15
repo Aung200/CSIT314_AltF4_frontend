@@ -1,13 +1,16 @@
 //libraries
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-//api(controller)
-import API from "../../../api/api";
-//context
-import { useAuth } from "../../../context/AuthContext";
+
 //components
 import { Pencil, Save, X } from "lucide-react";
 import { ToastContainer, toast } from "react-toastify";
+
+//api
+import API from "../../../api/api";
+
+//context
+import { useAuth } from "../../../context/AuthContext";
 
 function ProfileDetails() {
   const { isLoggedIn, profile } = useAuth();
@@ -33,7 +36,7 @@ function ProfileDetails() {
 
     const loadProfile = async () => {
       try {
-        const response = await API.getUserDetails(id);
+        const response = await API.getUserDetailsAPI(id);
         if (!isActive) return;
         const user = response.data?.user ?? response.data;
         if (!user || typeof user !== "object" || Array.isArray(user)) {

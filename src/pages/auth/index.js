@@ -1,12 +1,16 @@
 //libraries
 import { Navigate, Route, Routes } from "react-router-dom";
-//contexts
+
+//components
+import PageNotFound from "../error/index";
+
+//context
 import { useAuth } from "../../context/AuthContext";
+
 //pages
 import Login from "./sub/Login";
 import Register from "./sub/Register";
 import CompanyRegister from "./sub/CompanyRegister";
-import PageNotFound from "../error/index";
 
 function Auth() {
   const { isLoggedIn, setLogin } = useAuth();

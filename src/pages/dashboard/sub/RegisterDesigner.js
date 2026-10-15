@@ -1,11 +1,12 @@
 //libraries
 import { Link } from "react-router-dom";
+
 //components
 import { ArrowLeft } from "lucide-react";
 
 function RegisterDesigner() {
   return (
-    <section className="auth-card sm:max-w-3xl" aria-labelledby="designer-register-title">
+    <section className="auth-card w-full max-w-none" aria-labelledby="designer-register-title">
       <Link
         to="/dashboard/designers"
         className="mb-6 inline-flex items-center gap-2 font-semibold text-sage-700 hover:text-ink"

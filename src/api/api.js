@@ -1,3 +1,4 @@
+//libraries
 import axios from "axios";
 
 const endpoint = "https://backend-52c7fa59.fastapicloud.dev";
@@ -53,7 +54,7 @@ function logoutAPI() {
 }
 
 //User Profile APIs
-function getUserDetails(id) {
+function getUserDetailsAPI(id) {
   return axios.get(`${endpoint}/users/id/${id}`);
 }
 
@@ -67,7 +68,7 @@ function updateUserProfileAPI(id, first_name, last_name, address, phone) {
 }
 
 //Company Profile APIs
-function getCompanyDetails(id) {
+function getCompanyDetailsAPI(id) {
   return axios.get(`${endpoint}/companies/${id}`);
 }
 
@@ -81,6 +82,36 @@ function updateCompanyProfileAPI(id, name, description, phone, website, address)
   });
 }
 
+//Platform Management User APIs
+function get_customers(page, page_size, email = ""){
+  return axios.get(`${endpoint}/platform/customers`, {
+    params: {
+      page,
+      page_size,
+      email: email.trim() || undefined,
+    }
+  });
+}
+
+function get_companies(page, page_size, email = ""){
+  return axios.get(`${endpoint}/platform/companies`, {
+    params: {
+      page,
+      page_size,
+      email: email.trim() || undefined,
+    }
+  });
+}
+
+function update_company_status(id, status) {
+  return axios.put(`${endpoint}/platform/updateStatus`, null, {
+    params: {
+      id,
+      status,
+    }
+  });
+}
+
 const API = {
   loginAPI,
   registerUserAPI,
@@ -88,16 +119,15 @@ const API = {
   updatePasswordAPI,
   logoutAPI,
   
-  getUserDetails,
+  getUserDetailsAPI,
   updateUserProfileAPI,
   
-  getCompanyDetails,
+  getCompanyDetailsAPI,
   updateCompanyProfileAPI,
-  // changepwdAPI,
-  // forgotpwdAPI,
 
-  // userAPI,
-
+  get_customers,
+  get_companies,
+  update_company_status,  
   // createProduct,
   // updateProduct,
   // addProductVariant,
