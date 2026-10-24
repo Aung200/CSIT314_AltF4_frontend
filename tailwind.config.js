@@ -4,6 +4,15 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        popover: {
+          DEFAULT: "#ffffff",
+          foreground: "rgb(var(--color-ink) / <alpha-value>)",
+        },
+        accent: {
+          DEFAULT: "rgb(var(--color-sage-pale) / 0.25)",
+          foreground: "rgb(var(--color-ink) / <alpha-value>)",
+        },
+        muted: "rgb(var(--color-sage-light) / <alpha-value>)",
         sage: {
           50: "rgb(var(--color-sage-pale) / 0.25)",
           100: "rgb(var(--color-sage-pale) / <alpha-value>)",
@@ -15,5 +24,5 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [require("tailwindcss-animate")],
 };

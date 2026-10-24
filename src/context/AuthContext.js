@@ -1,6 +1,7 @@
 //libraries
 import { createContext, useContext, useState } from "react";
-//api(Controller)
+
+//api
 import API from "../api/api";
 
 const AuthContext = createContext(null);
@@ -20,6 +21,13 @@ function getStoredProfile() {
 export function AuthProvider({ children }) {
   const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem("isLoggedIn") === "true");
   const [profile, setProfile] = useState(getStoredProfile);
+  let role = null;
+  try {
+    const storedRole = JSON.parse(localStorage.getItem("role"));
+    if (storedRole != null) role = Number(storedRole);
+  } catch {
+    role = null;
+  }
 
   function setLogin(user) {
     if (user) {
@@ -38,7 +46,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, hideAuthLink: isLoggedIn, profile, setLogin, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, hideAuthLink: isLoggedIn, profile, role, setLogin, logout }}>
       {children}
     </AuthContext.Provider>
   );

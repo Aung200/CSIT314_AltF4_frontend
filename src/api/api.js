@@ -1,3 +1,4 @@
+//libraries
 import axios from "axios";
 
 const endpoint = "https://backend-52c7fa59.fastapicloud.dev";
@@ -53,12 +54,11 @@ function logoutAPI() {
 }
 
 //User Profile APIs
-function getUserDetails(id) {
+function getUserDetailsAPI(id) {
   return axios.get(`${endpoint}/users/id/${id}`);
 }
 
 function updateUserProfileAPI(id, first_name, last_name, address, phone) {
-  console.log("Updating profile with data:", { id, first_name, last_name, address, phone });
   return axios.put(`${endpoint}/users/update/${id}`, {
     first_name,
     last_name,
@@ -68,18 +68,88 @@ function updateUserProfileAPI(id, first_name, last_name, address, phone) {
 }
 
 //Company Profile APIs
-function getCompanyDetails(id) {
+function getCompanyDetailsAPI(id) {
   return axios.get(`${endpoint}/companies/${id}`);
 }
 
-function updateCompanyProfileAPI(id, name, description, phone, website, address) {
-  return axios.post(`${endpoint}/companies/update`, {
+function updateCompanyProfileAPI(
+  id,
+  name,
+  description,
+  phone,
+  website,
+  address,
+) {
+  return axios.put(`${endpoint}/companies/update/${id}`, {
     name,
     description,
     phone,
     website,
     address,
-  }, { params: { id } });
+  });
+}
+
+//Platform Management User APIs
+function get_customers(page, page_size, email = "") {
+  return axios.get(`${endpoint}/platform/customers`, {
+    params: {
+      page,
+      page_size,
+      email: email.trim() || undefined,
+    },
+  });
+}
+
+function get_companies(page, page_size, email = "") {
+  return axios.get(`${endpoint}/platform/companies`, {
+    params: {
+      page,
+      page_size,
+      email: email.trim() || undefined,
+    },
+  });
+}
+
+function update_company_status(id, status) {
+  return axios.put(`${endpoint}/platform/updateStatus`, null, {
+    params: {
+      id,
+      status,
+    },
+  });
+}
+
+//Contact Enquiry APIs
+function submit_generic_form(name, phone, email, description) {
+  return axios.post(`${endpoint}/contact/form`, {
+    name,
+    phone,
+    email,
+    description,
+  });
+}
+
+function get_user_enquiries(id, role) {
+  return axios.get(`${endpoint}/contact/lookup`, {
+    params: role === 3 ? { designer_id: id } : { user_id: id },
+  });
+}
+
+function get_enquiry_messages(id) {
+  return axios.get(`${endpoint}/contact/${id}/messages`);
+}
+
+function post_enquiry_message(sender_id, message, enquiry_id, design_id) {
+  return axios.post(`${endpoint}/contact/messages`, {
+    sender_id,
+    message,
+    enquiry_id,
+    design_id,
+  });
+}
+
+function change_enquiry_status(id) {
+  return axios.patch(`${endpoint}/contact/${id}/complete`);
 }
 
 const API = {
@@ -88,17 +158,23 @@ const API = {
   registerCompanyAPI,
   updatePasswordAPI,
   logoutAPI,
-  
-  getUserDetails,
+
+  getUserDetailsAPI,
   updateUserProfileAPI,
-  
-  getCompanyDetails,
+
+  getCompanyDetailsAPI,
   updateCompanyProfileAPI,
-  // changepwdAPI,
-  // forgotpwdAPI,
 
-  // userAPI,
+  get_customers,
+  get_companies,
+  update_company_status,
 
+  submit_generic_form,
+
+  get_user_enquiries,
+  get_enquiry_messages,
+  post_enquiry_message,
+  change_enquiry_status,
   // createProduct,
   // updateProduct,
   // addProductVariant,

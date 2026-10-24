@@ -1,8 +1,11 @@
+//libraries
 import { Navigate, Route, Routes } from "react-router-dom";
-import ProfileDetails from "./sub/ProfileDetails";
-import CompanyProfileDetails from "./sub/CompanyProfileDetails";
 
-function Profile() {
+//pages
+import ProfileDetailsPage from "./sub/ProfileDetailsPage";
+import CompanyProfileDetailsPage from "./sub/CompanyProfileDetailsPage";
+
+function ProfilePage() {
   let role;
   try {
     role = JSON.parse(localStorage.getItem("role"));
@@ -10,8 +13,8 @@ function Profile() {
     role = null;
   }
   const details = Number(role) === 2
-    ? <CompanyProfileDetails />
-    : <ProfileDetails />;
+    ? <CompanyProfileDetailsPage />
+    : <ProfileDetailsPage />;
 
   return (
     <Routes>
@@ -21,4 +24,4 @@ function Profile() {
   );
 }
 
-export default Profile;
+export default ProfilePage;

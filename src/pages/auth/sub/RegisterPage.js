@@ -1,16 +1,18 @@
 //libraries
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+
 //components
 import { ToastContainer, toast } from "react-toastify";
-//api(controllers)
+
+//api
 import API from "../../../api/api";
 
-function Register({onRegister}) {
+function RegisterPage({onRegister}) {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = async (event) => {
+  const registerUser = async (event) => {
     event.preventDefault();
     setLoading(true);
     const form = new FormData(event.currentTarget);
@@ -50,7 +52,7 @@ function Register({onRegister}) {
       <p className="auth-eyebrow">Make yourself at home</p>
       <h1 id="register-title">Sign up</h1>
       <p className="mb-8 text-ink/70">Create your Houzz account.</p>
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={registerUser} className="space-y-5">
         <div className="grid gap-5 sm:grid-cols-2">
           <div>
             <label htmlFor="register-first-name" className="auth-label">
@@ -143,4 +145,4 @@ function Register({onRegister}) {
   );
 }
 
-export default Register;
+export default RegisterPage;

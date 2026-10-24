@@ -1,16 +1,18 @@
 //libraries
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+
 //components
 import { ToastContainer, toast } from "react-toastify";
-//api(controllers)
+
+//api
 import API from "../../../api/api";
 
-function Login({onLogin}) {
+function LoginPage({onLogin}) {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = async (event) => {
+  const loginUser = async (event) => {
     event.preventDefault();
     setLoading(true);
     const form = new FormData(event.currentTarget);
@@ -41,7 +43,7 @@ function Login({onLogin}) {
       <p className="auth-eyebrow">Welcome back</p>
       <h1 id="login-title">Login</h1>
       <p className="mb-8 text-ink/70">Your next home project starts here.</p>
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={loginUser} className="space-y-5">
         <div>
           <label htmlFor="login-email" className="auth-label">
             Email
@@ -85,4 +87,4 @@ function Login({onLogin}) {
   );
 }
 
-export default Login;
+export default LoginPage;

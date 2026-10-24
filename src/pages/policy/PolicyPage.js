@@ -1,4 +1,4 @@
-function Policy() {
+function PolicyPage() {
   return (
     <section className="mx-auto max-w-3xl py-6 sm:py-10">
       <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-sage-700">Houzz</p>
@@ -12,4 +12,4 @@ function Policy() {
   );
 }
 
-export default Policy;
+export default PolicyPage;

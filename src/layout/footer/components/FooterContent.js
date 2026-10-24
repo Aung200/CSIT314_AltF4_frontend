@@ -1,5 +1,8 @@
-import { useAuth } from "../../../context/AuthContext";
+//libraries
 import { Link } from "react-router-dom";
+
+//context
+import { useAuth } from "../../../context/AuthContext";
 
 function FooterContent() {
   const { hideAuthLink } = useAuth();
