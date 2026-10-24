@@ -1,11 +1,18 @@
 //libraries
-import { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
+import { useEffect, useState } from "react";
 
 //components
 import { toast } from "react-toastify";
 import { Check, Clock, MoreHorizontal, X } from "lucide-react";
 import Pagination from "./Pagination";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../../../components/ui/dropdown-menu";
 
 //api
 import API from "../../../api/api";
@@ -20,40 +27,11 @@ function CompanyTable({ active = true }) {
   const [retry, setRetry] = useState(0);
   const [emailInput, setEmailInput] = useState("");
   const [searchEmail, setSearchEmail] = useState("");
-  const [openAction, setOpenAction] = useState(null);
-  const actionMenuRef = useRef(null);
-  const actionButtonRef = useRef(null);
+  const [openCompanyId, setOpenCompanyId] = useState(null);
   const [updatingCompanyId, setUpdatingCompanyId] = useState(null);
 
   useEffect(() => {
-    if (!openAction) return undefined;
-    const closeOnOutsideClick = (event) => {
-      if (!actionMenuRef.current?.contains(event.target) && !actionButtonRef.current?.contains(event.target)) {
-        setOpenAction(null);
-      }
-    };
-    const closeOnEscape = (event) => {
-      if (event.key === "Escape") {
-        setOpenAction(null);
-        actionButtonRef.current?.focus();
-      }
-    };
-    const closeOnMove = () => setOpenAction(null);
-    actionMenuRef.current?.querySelector("button:not(:disabled)")?.focus();
-    document.addEventListener("pointerdown", closeOnOutsideClick);
-    document.addEventListener("keydown", closeOnEscape);
-    window.addEventListener("resize", closeOnMove);
-    window.addEventListener("scroll", closeOnMove, true);
-    return () => {
-      document.removeEventListener("pointerdown", closeOnOutsideClick);
-      document.removeEventListener("keydown", closeOnEscape);
-      window.removeEventListener("resize", closeOnMove);
-      window.removeEventListener("scroll", closeOnMove, true);
-    };
-  }, [openAction]);
-
-  useEffect(() => {
-    setOpenAction(null);
+    setOpenCompanyId(null);
     if (!active) return undefined;
     let isActive = true;
 
@@ -107,7 +85,7 @@ function CompanyTable({ active = true }) {
       setCompanies((current) => current?.map((item) => (
         item.id === company.id ? { ...item, status } : item
       )));
-      setOpenAction(null);
+      setOpenCompanyId(null);
       setRetry((attempt) => attempt + 1);
     } catch (error) {
       const message =
@@ -227,28 +205,46 @@ function CompanyTable({ active = true }) {
                   </span>
                 </td>
                 <td className="border-t border-sage-200/60 px-2 py-3 sm:px-3">
-                  <button
-                    type="button"
-                    aria-label={`Actions for ${company.name || company.email}`}
-                    aria-expanded={openAction?.company.id === company.id}
-                    aria-controls={openAction?.company.id === company.id ? "company-actions" : undefined}
-                    disabled={company.id == null || updatingCompanyId != null}
-                    onClick={(event) => {
-                      if (openAction?.company.id === company.id) {
-                        setOpenAction(null);
-                        return;
-                      }
-                      actionButtonRef.current = event.currentTarget;
-                      const rect = event.currentTarget.getBoundingClientRect();
-                      const top = rect.bottom + 8 + 210 > window.innerHeight
-                        ? Math.max(8, rect.top - 218)
-                        : rect.bottom + 8;
-                      setOpenAction({ company, top, left: Math.max(8, Math.min(rect.right - 192, window.innerWidth - 200)) });
-                    }}
-                    className="inline-flex rounded-lg p-2 text-sage-700 transition-colors hover:bg-sage-100 disabled:opacity-50"
+                  <DropdownMenu
+                    open={active && openCompanyId === company.id}
+                    onOpenChange={(open) => setOpenCompanyId(open ? company.id : null)}
                   >
-                    <MoreHorizontal size={20} aria-hidden="true" />
-                  </button>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        type="button"
+                        aria-label={`Actions for ${company.name || company.email}`}
+                        disabled={company.id == null || updatingCompanyId != null}
+                        className="inline-flex rounded-lg p-2 text-sage-700 transition-colors hover:bg-sage-100 disabled:opacity-50"
+                      >
+                        <MoreHorizontal size={20} aria-hidden="true" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      align="end"
+                      sideOffset={8}
+                      aria-label={`Change status for ${company.name || company.email}`}
+                      className="z-[60] w-48 rounded-2xl border-sage-200 p-2"
+                    >
+                      <DropdownMenuLabel className="px-3 py-2 text-xs uppercase tracking-wide text-ink/50">
+                        Change status
+                      </DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      {[
+                        { status: "approved", label: "Approve", icon: Check, color: "text-green-700 focus:bg-green-50 focus:text-green-700" },
+                        { status: "pending", label: "Set pending", icon: Clock, color: "text-yellow-700 focus:bg-yellow-50 focus:text-yellow-700" },
+                        { status: "rejected", label: "Reject", icon: X, color: "text-red-700 focus:bg-red-50 focus:text-red-700" },
+                      ].map(({ status, label, icon: Icon, color }) => (
+                        <DropdownMenuItem
+                          key={status}
+                          disabled={updatingCompanyId != null || normalizeStatus(company.status) === status}
+                          onSelect={() => updateCompanyStatus(company, status)}
+                          className={`gap-3 rounded-xl px-3 py-2.5 font-medium ${color}`}
+                        >
+                          <Icon size={16} aria-hidden="true" /> {label}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </td>
               </tr>
             )) : (
@@ -261,35 +257,7 @@ function CompanyTable({ active = true }) {
           </tbody>
         </table>
       </div>
-      {active && openAction && createPortal(
-        <div
-          ref={actionMenuRef}
-          id="company-actions"
-          role="group"
-          aria-label={`Change status for ${openAction.company.name || openAction.company.email}`}
-          style={{ top: openAction.top, left: openAction.left }}
-          className="fixed z-[60] w-48 rounded-2xl border border-sage-200 bg-white p-2 shadow-lg"
-        >
-          <p className="px-3 py-2 text-xs font-semibold uppercase tracking-wide text-ink/50">Change status</p>
-          {[
-            { status: "approved", label: "Approve", icon: Check, color: "text-green-700 hover:bg-green-50" },
-            { status: "pending", label: "Set pending", icon: Clock, color: "text-yellow-700 hover:bg-yellow-50" },
-            { status: "rejected", label: "Reject", icon: X, color: "text-red-700 hover:bg-red-50" },
-          ].map(({ status, label, icon: Icon, color }) => (
-            <button
-              key={status}
-              type="button"
-              disabled={updatingCompanyId != null || normalizeStatus(openAction.company.status) === status}
-              onClick={() => updateCompanyStatus(openAction.company, status)}
-              className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium disabled:opacity-40 ${color}`}
-            >
-              <Icon size={16} aria-hidden="true" /> {label}
-            </button>
-          ))}
-          {updatingCompanyId != null && <p role="status" className="px-3 py-2 text-xs text-ink/60">Saving...</p>}
-        </div>,
-        document.body,
-      )}
+      {updatingCompanyId != null && <p role="status" className="mt-3 text-sm text-ink/60">Saving company status...</p>}
       <Pagination
         page={page}
         pageSize={pageSize}

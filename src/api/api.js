@@ -129,6 +129,29 @@ function submit_generic_form(name, phone, email, description) {
   });
 }
 
+function get_user_enquiries(id, role) {
+  return axios.get(`${endpoint}/contact/lookup`, {
+    params: role === 3 ? { designer_id: id } : { user_id: id },
+  });
+}
+
+function get_enquiry_messages(id) {
+  return axios.get(`${endpoint}/contact/${id}/messages`);
+}
+
+function post_enquiry_message(sender_id, message, enquiry_id, design_id) {
+  return axios.post(`${endpoint}/contact/messages`, {
+    sender_id,
+    message,
+    enquiry_id,
+    design_id,
+  });
+}
+
+function change_enquiry_status(id) {
+  return axios.patch(`${endpoint}/contact/${id}/complete`);
+}
+
 const API = {
   loginAPI,
   registerUserAPI,
@@ -147,6 +170,11 @@ const API = {
   update_company_status,
 
   submit_generic_form,
+
+  get_user_enquiries,
+  get_enquiry_messages,
+  post_enquiry_message,
+  change_enquiry_status,
   // createProduct,
   // updateProduct,
   // addProductVariant,

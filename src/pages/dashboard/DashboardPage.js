@@ -13,6 +13,7 @@ import RegisterDesignerPage from "./sub/RegisterDesignerPage";
 import CustomerDashboardPage from "./sub/CustomerDashboardPage";
 import DesignerDashboardPage from "./sub/DesignerDashboardPage";
 import PlatformDashboardPage from "./sub/PlatformDashboardPage";
+import EnquiryChatSessionPage from "./sub/EnquiryChatSessionPage";
 
 function DashboardPage() {
   const { isLoggedIn, role } = useAuth();
@@ -52,6 +53,14 @@ function DashboardPage() {
   return (
     <Routes>
       <Route index element={dashboard} />
+      <Route
+        path="enquiries/:enquiryNumber"
+        element={role === 3 || role === 4 ? <EnquiryChatSessionPage /> : <Navigate to="/dashboard" replace />}
+      />
+      <Route
+        path="chats/:enquiryNumber"
+        element={role === 3 || role === 4 ? <EnquiryChatSessionPage /> : <Navigate to="/dashboard" replace />}
+      />
       <Route
         path="designers"
         element={role === 2 ? <CompanyDashboardPage /> : <Navigate to="/dashboard" replace />}
