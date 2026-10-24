@@ -1,5 +1,6 @@
 //libraries
 import { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 
 //components
 import { MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
@@ -36,15 +37,13 @@ function CategoryTable({ active = true }) {
   const canManageCategories = isLoggedIn && role === 1;
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [listError, setListError] = useState("");
+  const [listFailed, setListFailed] = useState(false);
   const [retry, setRetry] = useState(0);
   const [panelMode, setPanelMode] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [working, setWorking] = useState(false);
-  const [actionError, setActionError] = useState("");
-  const [notice, setNotice] = useState("");
   const actionRequestRef = useRef(null);
   const panelHeadingRef = useRef(null);
 
@@ -52,20 +51,22 @@ function CategoryTable({ active = true }) {
     setPanelMode(null);
     setSelectedCategory(null);
     setWorking(false);
-    setActionError("");
     if (!active || !canManageCategories) return undefined;
     let isActive = true;
 
     const loadCategories = async () => {
       setLoading(true);
-      setListError("");
+      setListFailed(false);
       try {
         const response = await API.get_categories();
         if (!isActive) return;
         if (!Array.isArray(response.data)) throw new Error("Categories were returned in an unexpected format.");
         setCategories(response.data);
       } catch (error) {
-        if (isActive) setListError(getCategoryError(error, "Unable to load categories. Please try again."));
+        if (isActive) {
+          setListFailed(true);
+          toast.error(getCategoryError(error, "Unable to load categories. Please try again."), { autoClose: 5000 });
+        }
       } finally {
         if (isActive) setLoading(false);
       }
@@ -88,8 +89,6 @@ function CategoryTable({ active = true }) {
     setName("");
     setDescription("");
     setSelectedCategory(null);
-    setActionError("");
-    setNotice("");
     setPanelMode("create");
   };
 
@@ -97,7 +96,6 @@ function CategoryTable({ active = true }) {
     if (actionRequestRef.current) return;
     setPanelMode(null);
     setSelectedCategory(null);
-    setActionError("");
   };
 
   const editCategory = async (category) => {
@@ -105,8 +103,6 @@ function CategoryTable({ active = true }) {
     const request = { cancelled: false };
     actionRequestRef.current = request;
     setWorking(true);
-    setActionError("");
-    setNotice("");
     setPanelMode("loading");
 
     try {
@@ -121,7 +117,7 @@ function CategoryTable({ active = true }) {
     } catch (error) {
       if (request.cancelled) return;
       setPanelMode(null);
-      setActionError(getCategoryError(error, "Unable to load this category. Please try again."));
+      toast.error(getCategoryError(error, "Unable to load this category. Please try again."), { autoClose: 5000 });
     } finally {
       if (!request.cancelled) {
         actionRequestRef.current = null;
@@ -134,13 +130,12 @@ function CategoryTable({ active = true }) {
     event.preventDefault();
     if (!active || !canManageCategories || actionRequestRef.current) return;
     if (!name.trim()) {
-      setActionError("Please enter a category name.");
+      toast.error("Please enter a category name.", { autoClose: 5000 });
       return;
     }
     const request = { cancelled: false };
     actionRequestRef.current = request;
     setWorking(true);
-    setActionError("");
     const editing = panelMode === "edit";
 
     try {
@@ -152,10 +147,10 @@ function CategoryTable({ active = true }) {
       if (request.cancelled) return;
       setPanelMode(null);
       setSelectedCategory(null);
-      setNotice(editing ? "Category updated successfully." : "Category added successfully.");
+      toast.success(editing ? "Category updated successfully." : "Category added successfully.", { autoClose: 5000 });
       setRetry((attempt) => attempt + 1);
     } catch (error) {
-      if (!request.cancelled) setActionError(getCategoryError(error, "Unable to save this category. Please try again."));
+      if (!request.cancelled) toast.error(getCategoryError(error, "Unable to save this category. Please try again."), { autoClose: 5000 });
     } finally {
       if (!request.cancelled) {
         actionRequestRef.current = null;
@@ -167,8 +162,6 @@ function CategoryTable({ active = true }) {
   const requestCategoryDeletion = (category) => {
     if (!active || !canManageCategories || actionRequestRef.current) return;
     setSelectedCategory(category);
-    setActionError("");
-    setNotice("");
     setPanelMode("delete");
   };
 
@@ -177,17 +170,16 @@ function CategoryTable({ active = true }) {
     const request = { cancelled: false };
     actionRequestRef.current = request;
     setWorking(true);
-    setActionError("");
 
     try {
       await API.delete_category(selectedCategory.id);
       if (request.cancelled) return;
       setPanelMode(null);
       setSelectedCategory(null);
-      setNotice("Category deleted successfully.");
+      toast.success("Category deleted successfully.", { autoClose: 5000 });
       setRetry((attempt) => attempt + 1);
     } catch (error) {
-      if (!request.cancelled) setActionError(getCategoryError(error, "Unable to delete this category. Please try again."));
+      if (!request.cancelled) toast.error(getCategoryError(error, "Unable to delete this category. Please try again."), { autoClose: 5000 });
     } finally {
       if (!request.cancelled) {
         actionRequestRef.current = null;
@@ -213,8 +205,6 @@ function CategoryTable({ active = true }) {
           <Plus size={18} aria-hidden="true" /> Add category
         </button>
       </div>
-      {notice && <p role="status" className="mb-5 rounded-xl bg-sage-50 px-4 py-3 text-sm text-sage-700">{notice}</p>}
-      {actionError && <p role="alert" className="mb-5 text-sm text-red-700">{actionError}</p>}
       {panelMode === "loading" && <p role="status" className="mb-5 text-ink/70">Loading category...</p>}
       {(panelMode === "create" || panelMode === "edit") && (
         <form onSubmit={saveCategory} aria-label={panelMode === "edit" ? "Edit category" : "Add category"} className="mb-6 rounded-2xl border border-sage-200/60 bg-sage-50 p-5 sm:p-6">
@@ -262,9 +252,9 @@ function CategoryTable({ active = true }) {
           <tbody>
             {loading ? (
               <tr><td colSpan={3} className="px-5 py-10 text-center text-ink/70"><p role="status">Loading categories...</p></td></tr>
-            ) : listError ? (
+            ) : listFailed ? (
               <tr><td colSpan={3} className="px-5 py-10 text-center text-ink/70">
-                <div role="alert"><p>{listError}</p><button type="button" onClick={retryCategories} disabled={working} className="mt-3 font-semibold text-sage-700 underline">Try again</button></div>
+                <div><button type="button" onClick={retryCategories} disabled={working} className="mt-3 font-semibold text-sage-700 underline">Try again</button></div>
               </td></tr>
             ) : categories.length > 0 ? categories.map((category) => (
               <tr key={category.id}>

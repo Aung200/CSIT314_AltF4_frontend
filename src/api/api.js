@@ -5,6 +5,7 @@ import PlatformAPI from "./platformApi";
 import ContactAPI from "./contactApi";
 import EnquiryAPI from "./enquiryApi";
 import CategoryAPI from "./categoryApi";
+import DesignAPI from "./designApi";
 
 const API = {
   ...AuthAPI,
@@ -13,6 +14,7 @@ const API = {
   ...ContactAPI,
   ...EnquiryAPI,
   ...CategoryAPI,
+  ...DesignAPI,
 };
 
 export default API;
