@@ -1,9 +1,9 @@
 //libraries
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 //components
-import { ArrowLeft, CheckCircle2, MessageCircle, RefreshCw, Send } from "lucide-react";
+import { ArrowLeft, CheckCircle2, MessageCircle, Send } from "lucide-react";
 import { ToastContainer, toast } from "react-toastify";
 import EnquiryStatusBadge from "../components/EnquiryStatusBadge";
 
@@ -31,10 +31,12 @@ function EnquiryChatSessionPage() {
   const userId = profile?.id;
   const sessionKey = `${role}/${userId}/${enquiryNumber}`;
   const [enquiry, setEnquiry] = useState(null);
+  const enquiryId = enquiry?.enquiry_id;
   const [messages, setMessages] = useState([]);
   const conversationRef = useRef(null);
   const messageInputRef = useRef(null);
   const pendingActionRef = useRef(null);
+  const pollingRequestRef = useRef(null);
   const [loadedSessionKey, setLoadedSessionKey] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -112,6 +114,8 @@ function EnquiryChatSessionPage() {
       isActive = false;
       if (pendingActionRef.current) pendingActionRef.current.cancelled = true;
       pendingActionRef.current = null;
+      if (pollingRequestRef.current) pollingRequestRef.current.cancelled = true;
+      pollingRequestRef.current = null;
     };
   }, [userId, role, enquiryNumber, sessionKey, retry]);
 
@@ -125,11 +129,19 @@ function EnquiryChatSessionPage() {
     if (!sending) messageInputRef.current?.focus({ preventScroll: true });
   }, [sending]);
 
+  const cancelConversationPoll = () => {
+    if (!pollingRequestRef.current) return;
+    pollingRequestRef.current.cancelled = true;
+    pollingRequestRef.current = null;
+    setRefreshing(false);
+  };
+
   const sendEnquiryMessage = async (event) => {
     event.preventDefault();
     const message = messageText.trim();
     if (!message || pendingActionRef.current || !enquiry || enquiry.status === "Completed") return;
 
+    cancelConversationPoll();
     const request = { cancelled: false };
     pendingActionRef.current = request;
     setSending(true);
@@ -166,7 +178,7 @@ function EnquiryChatSessionPage() {
         (typeof detail === "string" ? detail : "") ||
         "Unable to send your message. Please try again.";
       setMessageError(messageSent
-        ? "Your message was sent, but replies could not be refreshed. Use Refresh to load the latest conversation."
+        ? "Your message was sent, but replies could not be refreshed. The conversation will update automatically."
         : errorMessage);
     } finally {
       if (!request.cancelled) {
@@ -176,17 +188,17 @@ function EnquiryChatSessionPage() {
     }
   };
 
-  const refreshEnquiryConversation = async () => {
-    if (!enquiry || pendingActionRef.current) return;
+  const refreshEnquiryConversation = useCallback(async () => {
+    if (!enquiryId || pendingActionRef.current || pollingRequestRef.current) return;
 
     const request = { cancelled: false };
-    pendingActionRef.current = request;
+    pollingRequestRef.current = request;
     setRefreshing(true);
     setRefreshError("");
 
     try {
       const [chatResponse, enquiryResponse] = await Promise.all([
-        API.get_enquiry_messages(enquiry.enquiry_id),
+        API.get_enquiry_messages(enquiryId),
         API.get_user_enquiries(userId, role),
       ]);
       if (request.cancelled) return;
@@ -194,13 +206,12 @@ function EnquiryChatSessionPage() {
         throw new Error("Your conversation was returned in an unexpected format.");
       }
 
-      const updatedEnquiry = enquiryResponse.data.find((item) => item?.enquiry_id === enquiry.enquiry_id);
+      const updatedEnquiry = enquiryResponse.data.find((item) => item?.enquiry_id === enquiryId);
       if (!updatedEnquiry) throw new Error("This enquiry could not be found in your account.");
 
-      setMessages(chatResponse.data);
+      // Keep the current message list when nothing changed, preserving its scroll position.
+      setMessages((current) => JSON.stringify(current) === JSON.stringify(chatResponse.data) ? current : chatResponse.data);
       setEnquiry(updatedEnquiry);
-      setMessageError("");
-      setCompletionError("");
     } catch (error) {
       if (request.cancelled) return;
       const detail = error.response?.data?.detail;
@@ -208,19 +219,30 @@ function EnquiryChatSessionPage() {
         detail?.message ||
         error.response?.data?.message ||
         (typeof detail === "string" ? detail : "") ||
-        "Unable to refresh the conversation. Please try again.";
+        "Unable to update the conversation. Retrying automatically.";
       setRefreshError(message);
     } finally {
       if (!request.cancelled) {
-        pendingActionRef.current = null;
+        pollingRequestRef.current = null;
         setRefreshing(false);
       }
     }
-  };
+  }, [enquiryId, userId, role]);
+
+  useEffect(() => {
+    if (!enquiryId || loading || loadedSessionKey !== sessionKey) return undefined;
+
+    const interval = setInterval(() => {
+      refreshEnquiryConversation();
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [enquiryId, loading, loadedSessionKey, sessionKey, refreshEnquiryConversation]);
 
   const completeEnquiry = async () => {
     if (role !== 3 || !enquiry || enquiry.status === "Completed" || pendingActionRef.current) return;
 
+    cancelConversationPoll();
     const request = { cancelled: false };
     pendingActionRef.current = request;
     setCompleting(true);
@@ -295,7 +317,7 @@ function EnquiryChatSessionPage() {
                 <button
                   type="button"
                   onClick={completeEnquiry}
-                  disabled={sending || completing || refreshing}
+                  disabled={sending || completing}
                   className="inline-flex items-center gap-2 rounded-full bg-sage-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-ink disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <CheckCircle2 size={16} aria-hidden="true" /> {completing ? "Completing..." : "Mark as completed"}
@@ -305,17 +327,8 @@ function EnquiryChatSessionPage() {
           </div>
           {completionError && <p role="alert" className="mb-6 text-sm text-red-700">{completionError}</p>}
           <div className="overflow-hidden rounded-2xl border border-sage-200/60">
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-sage-200/60 px-5 py-4">
+            <div className="border-b border-sage-200/60 px-5 py-4">
               <h2 className="font-semibold text-ink">Conversation</h2>
-              <button
-                type="button"
-                onClick={refreshEnquiryConversation}
-                disabled={refreshing || sending || completing}
-                className="inline-flex items-center gap-2 rounded-full border border-sage-200 px-4 py-2 text-sm font-semibold text-sage-700 hover:bg-sage-50 disabled:cursor-wait disabled:opacity-50"
-              >
-                <RefreshCw size={16} aria-hidden="true" className={refreshing ? "animate-spin" : ""} />
-                {refreshing ? "Refreshing..." : "Refresh"}
-              </button>
             </div>
             {refreshError && <p role="alert" className="border-b border-sage-200/60 px-5 py-3 text-sm text-red-700">{refreshError}</p>}
             <div
@@ -377,7 +390,7 @@ function EnquiryChatSessionPage() {
                 <p id="enquiry-message-help" className="mt-2 text-xs text-ink/60">Enter to send. Shift+Enter for a new line.</p>
                 {messageError && <p role="alert" className="mt-3 text-sm text-red-700">{messageError}</p>}
                 <div className="mt-3 flex justify-end">
-                  <button type="submit" disabled={sending || completing || refreshing || !messageText.trim()} className="inline-flex items-center gap-2 rounded-full bg-sage-700 px-5 py-3 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50">
+                  <button type="submit" disabled={sending || completing || !messageText.trim()} className="inline-flex items-center gap-2 rounded-full bg-sage-700 px-5 py-3 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50">
                     <Send size={16} aria-hidden="true" /> {sending ? "Sending..." : "Send message"}
                   </button>
                 </div>

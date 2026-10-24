@@ -5,6 +5,7 @@ import { useSearchParams } from "react-router-dom";
 import { Bell, Eye, Images, MessageCircle } from "lucide-react";
 import { ToastContainer } from "react-toastify";
 import EnquiryList from "../components/EnquiryList";
+import DesignerDesignTable from "../components/DesignerDesignTable";
 
 const tabs = [
   { id: "designs", label: "Your designs", icon: Images },
@@ -12,7 +13,6 @@ const tabs = [
 ];
 
 const designSections = [
-  { title: "Manage designs", description: "Create and update your designs.", icon: Images },
   { title: "Design views", description: "See how many views your designs receive.", icon: Eye },
   { title: "Like alerts", description: "Get notified when a customer likes your design.", icon: Bell },
 ];
@@ -77,16 +77,19 @@ function DesignerDashboardPage() {
           className="pt-6"
         >
           {id === "designs" && (
-            <div className="grid gap-5 sm:grid-cols-2">
-              {designSections.map(({ title, description, icon: Icon }) => (
-                <div key={title} className="rounded-2xl border border-sage-200/60 p-5">
-                  <Icon size={24} className="mb-4 text-sage-700" aria-hidden="true" />
-                  <h2 className="text-lg font-semibold text-ink">{title}</h2>
-                  <p className="mt-2 text-sm text-ink/70">{description}</p>
-                  <p className="mt-4 text-xs font-semibold text-sage-700">Coming soon</p>
-                </div>
-              ))}
-            </div>
+            <>
+              <DesignerDesignTable active={activeTab === "designs"} />
+              <div className="mt-6 grid gap-5 sm:grid-cols-2">
+                {designSections.map(({ title, description, icon: Icon }) => (
+                  <div key={title} className="rounded-2xl border border-sage-200/60 p-5">
+                    <Icon size={24} className="mb-4 text-sage-700" aria-hidden="true" />
+                    <h2 className="text-lg font-semibold text-ink">{title}</h2>
+                    <p className="mt-2 text-sm text-ink/70">{description}</p>
+                    <p className="mt-4 text-xs font-semibold text-sage-700">Coming soon</p>
+                  </div>
+                ))}
+              </div>
+            </>
           )}
           {id === "enquiries" && <EnquiryList active={activeTab === "enquiries"} />}
         </div>

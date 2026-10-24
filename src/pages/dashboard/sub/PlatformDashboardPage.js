@@ -2,15 +2,16 @@
 import { useSearchParams } from "react-router-dom";
 
 //components
-import { Building2, Images, Users } from "lucide-react";
+import { Building2, Tags, Users } from "lucide-react";
 import { ToastContainer } from "react-toastify";
 import CustomerTable from "../components/CustomerTable";
 import CompanyTable from "../components/CompanyTable";
+import CategoryTable from "../components/CategoryTable";
 
 const tabs = [
   { id: "customers", label: "Customers", icon: Users },
   { id: "companies", label: "Companies", icon: Building2 },
-  { id: "designs", label: "Design statuses", icon: Images },
+  { id: "categories", label: "Categories", icon: Tags },
 ];
 
 function PlatformDashboardPage() {
@@ -44,7 +45,7 @@ function PlatformDashboardPage() {
       <p className="auth-eyebrow">Platform management</p>
       <h1 id="dashboard-title">Dashboard</h1>
       <p className="mb-8 text-ink/70">
-        Review customer and company accounts, and manage design statuses.
+        Review customer and company accounts, and categories.
       </p>
       <div role="tablist" aria-label="Platform management" className="flex gap-2 overflow-x-auto border-b border-sage-200/60 pb-3">
         {tabs.map(({ id, label, icon: Icon }, index) => (
@@ -80,14 +81,8 @@ function PlatformDashboardPage() {
           {id === "companies" && (
             <CompanyTable active={activeTab === "companies"} />
           )}
-          {id === "designs" && (
-            <div>
-              <h2 className="text-xl font-semibold text-ink">Design statuses</h2>
-              <p className="mt-2 text-ink/70">Review designs and change their status.</p>
-              <p className="mt-6 rounded-2xl border border-sage-200/60 p-6 text-center text-ink/70">
-                Design status management is coming soon.
-              </p>
-            </div>
+          {id === "categories" && (
+            <CategoryTable active={activeTab === "categories"} />
           )}
         </div>
       ))}
