@@ -13,19 +13,19 @@ const tabs = [
   { id: "designs", label: "Design statuses", icon: Images },
 ];
 
-function PlatformDashboard() {
+function PlatformDashboardPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedTab = searchParams.get("tab");
   const activeTab = tabs.some((tab) => tab.id === selectedTab) ? selectedTab : "customers";
 
-  const selectTab = (id) => {
+  const selectDashboardTab = (id) => {
     setSearchParams((params) => {
       params.set("tab", id);
       return params;
     });
   };
 
-  const handleTabKeyDown = (event, index) => {
+  const navigateDashboardTabs = (event, index) => {
     let nextIndex;
     if (event.key === "ArrowRight") nextIndex = (index + 1) % tabs.length;
     else if (event.key === "ArrowLeft") nextIndex = (index + tabs.length - 1) % tabs.length;
@@ -35,7 +35,7 @@ function PlatformDashboard() {
 
     event.preventDefault();
     document.getElementById(`platform-tab-${tabs[nextIndex].id}`)?.focus();
-    selectTab(tabs[nextIndex].id);
+    selectDashboardTab(tabs[nextIndex].id);
   };
 
   return (
@@ -56,8 +56,8 @@ function PlatformDashboard() {
             aria-selected={activeTab === id}
             aria-controls={`platform-panel-${id}`}
             tabIndex={activeTab === id ? 0 : -1}
-            onClick={() => selectTab(id)}
-            onKeyDown={(event) => handleTabKeyDown(event, index)}
+            onClick={() => selectDashboardTab(id)}
+            onKeyDown={(event) => navigateDashboardTabs(event, index)}
             className={`inline-flex shrink-0 items-center gap-2 rounded-full px-5 py-2 font-semibold transition-colors ${activeTab === id ? "bg-sage-700 text-white" : "text-sage-700 hover:bg-sage-100"}`}
           >
             <Icon size={18} aria-hidden="true" /> {label}
@@ -95,4 +95,4 @@ function PlatformDashboard() {
   );
 }
 
-export default PlatformDashboard;
+export default PlatformDashboardPage;

@@ -94,7 +94,7 @@ function CompanyTable({ active = true }) {
     return () => { isActive = false; };
   }, [active, page, pageSize, retry, searchEmail]);
 
-  const handleStatusChange = async (company, status) => {
+  const updateCompanyStatus = async (company, status) => {
     if (updatingCompanyId != null || company.id == null || status === normalizeStatus(company.status)) return;
     setUpdatingCompanyId(company.id);
     try {
@@ -122,6 +122,24 @@ function CompanyTable({ active = true }) {
     }
   };
 
+  const searchCompanies = (event) => {
+    event.preventDefault();
+    setPage(1);
+    setSearchEmail(emailInput.trim());
+    setRetry((attempt) => attempt + 1);
+  };
+
+  const clearCompanySearch = () => {
+    setEmailInput("");
+    setSearchEmail("");
+    setPage(1);
+  };
+
+  const changeCompanyPageSize = (size) => {
+    setPageSize(size);
+    setPage(1);
+  };
+
   return (
     <section aria-label="All companies" aria-busy={loading}>
       <h2 className="text-xl font-semibold text-ink">All companies</h2>
@@ -129,12 +147,7 @@ function CompanyTable({ active = true }) {
       <form
         role="search"
         aria-label="Search companies"
-        onSubmit={(event) => {
-          event.preventDefault();
-          setPage(1);
-          setSearchEmail(emailInput.trim());
-          setRetry((attempt) => attempt + 1);
-        }}
+        onSubmit={searchCompanies}
         className="mb-6"
       >
         <label htmlFor="company-search-email" className="auth-label">Search by email</label>
@@ -154,11 +167,7 @@ function CompanyTable({ active = true }) {
           {(emailInput || searchEmail) && (
             <button
               type="button"
-              onClick={() => {
-                setEmailInput("");
-                setSearchEmail("");
-                setPage(1);
-              }}
+              onClick={clearCompanySearch}
               className="rounded-full border border-sage-200 px-5 py-3 font-semibold text-sage-700 hover:bg-sage-100"
             >
               Clear
@@ -271,7 +280,7 @@ function CompanyTable({ active = true }) {
               key={status}
               type="button"
               disabled={updatingCompanyId != null || normalizeStatus(openAction.company.status) === status}
-              onClick={() => handleStatusChange(openAction.company, status)}
+              onClick={() => updateCompanyStatus(openAction.company, status)}
               className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium disabled:opacity-40 ${color}`}
             >
               <Icon size={16} aria-hidden="true" /> {label}
@@ -286,10 +295,7 @@ function CompanyTable({ active = true }) {
         pageSize={pageSize}
         totalItems={totalItems}
         onPageChange={setPage}
-        onPageSizeChange={(size) => {
-          setPageSize(size);
-          setPage(1);
-        }}
+        onPageSizeChange={changeCompanyPageSize}
         disabled={loading || Boolean(error)}
       />
     </section>

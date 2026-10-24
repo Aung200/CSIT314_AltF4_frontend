@@ -8,12 +8,11 @@ import { ToastContainer, toast } from "react-toastify";
 //api
 import API from "../../../api/api";
 
-
-function CompanyRegister({ onRegister }) {
+function CompanyRegisterPage({ onRegister }) {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = async (event) => {
+  const registerCompany = async (event) => {
     event.preventDefault();
     setLoading(true);
     const form = new FormData(event.currentTarget);
@@ -57,7 +56,7 @@ function CompanyRegister({ onRegister }) {
       <p className="auth-eyebrow">For businesses</p>
       <h1 id="company-register-title">Register your company</h1>
       <p className="mb-8 text-ink/70">Create a company account on Houzz.</p>
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={registerCompany} className="space-y-5">
         <div>
           <label htmlFor="company-register-name" className="auth-label">
             Company name
@@ -177,4 +176,4 @@ function CompanyRegister({ onRegister }) {
   );
 }
 
-export default CompanyRegister;
+export default CompanyRegisterPage;

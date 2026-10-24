@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 //components
 import { Plus, Users } from "lucide-react";
 
-function CompanyDashboard() {
+function CompanyDashboardPage() {
   return (
     <section className="auth-card w-full max-w-none" aria-labelledby="dashboard-title">
       <p className="auth-eyebrow">Company dashboard</p>
@@ -31,4 +31,4 @@ function CompanyDashboard() {
   );
 }
 
-export default CompanyDashboard;
+export default CompanyDashboardPage;

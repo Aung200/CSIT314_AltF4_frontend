@@ -1,7 +1,7 @@
 //libraries
 import { Link } from "react-router-dom";
 
-function PageNotFound() {
+function PageNotFoundPage() {
   return (
     <section aria-labelledby="error-title" className="flex min-h-[65vh] items-center justify-center py-8">
       <div className="w-full max-w-xl rounded-3xl border border-sage-200/60 bg-white px-6 py-12 text-center shadow-[0_12px_40px_rgba(28,42,31,0.04)] sm:px-12 sm:py-16">
@@ -25,4 +25,4 @@ function PageNotFound() {
   );
 }
 
-export default PageNotFound;
+export default PageNotFoundPage;

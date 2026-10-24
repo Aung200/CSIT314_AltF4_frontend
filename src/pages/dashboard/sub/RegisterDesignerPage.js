@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 //components
 import { ArrowLeft } from "lucide-react";
 
-function RegisterDesigner() {
+function RegisterDesignerPage() {
   return (
     <section className="auth-card w-full max-w-none" aria-labelledby="designer-register-title">
       <Link
@@ -67,4 +67,4 @@ function RegisterDesigner() {
   );
 }
 
-export default RegisterDesigner;
+export default RegisterDesignerPage;

@@ -2,7 +2,7 @@
 import { Bell, Eye, Images, MessageCircle } from "lucide-react";
 import DashboardOverview from "../components/DashboardOverview";
 
-function DesignerDashboard() {
+function DesignerDashboardPage() {
   return (
     <DashboardOverview
       eyebrow="Designer dashboard"
@@ -18,4 +18,4 @@ function DesignerDashboard() {
   );
 }
 
-export default DesignerDashboard;
+export default DesignerDashboardPage;

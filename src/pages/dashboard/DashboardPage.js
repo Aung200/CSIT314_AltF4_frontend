@@ -8,13 +8,13 @@ import DashboardOverview from "./components/DashboardOverview";
 import { useAuth } from "../../context/AuthContext";
 
 //pages
-import CompanyDashboard from "./sub/CompanyDashboard";
-import RegisterDesigner from "./sub/RegisterDesigner";
-import CustomerDashboard from "./sub/CustomerDashboard";
-import DesignerDashboard from "./sub/DesignerDashboard";
-import PlatformDashboard from "./sub/PlatformDashboard";
+import CompanyDashboardPage from "./sub/CompanyDashboardPage";
+import RegisterDesignerPage from "./sub/RegisterDesignerPage";
+import CustomerDashboardPage from "./sub/CustomerDashboardPage";
+import DesignerDashboardPage from "./sub/DesignerDashboardPage";
+import PlatformDashboardPage from "./sub/PlatformDashboardPage";
 
-function Dashboard() {
+function DashboardPage() {
   const { isLoggedIn, role } = useAuth();
 
   if (!isLoggedIn) {
@@ -32,13 +32,13 @@ function Dashboard() {
       />
     );
   } else if (role === 1) {
-    dashboard = <PlatformDashboard />;
+    dashboard = <PlatformDashboardPage />;
   } else if (role === 2) {
-    dashboard = <CompanyDashboard />;
+    dashboard = <CompanyDashboardPage />;
   } else if (role === 3) {
-    dashboard = <DesignerDashboard />;
+    dashboard = <DesignerDashboardPage />;
   } else if (role === 4) {
-    dashboard = <CustomerDashboard />;
+    dashboard = <CustomerDashboardPage />;
   } else {
     dashboard = (
       <DashboardOverview
@@ -54,15 +54,15 @@ function Dashboard() {
       <Route index element={dashboard} />
       <Route
         path="designers"
-        element={role === 2 ? <CompanyDashboard /> : <Navigate to="/dashboard" replace />}
+        element={role === 2 ? <CompanyDashboardPage /> : <Navigate to="/dashboard" replace />}
       />
       <Route
         path="designers/register"
-        element={role === 2 ? <RegisterDesigner /> : <Navigate to="/dashboard" replace />}
+        element={role === 2 ? <RegisterDesignerPage /> : <Navigate to="/dashboard" replace />}
       />
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
   );
 }
 
-export default Dashboard;
+export default DashboardPage;

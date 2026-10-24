@@ -1,7 +1,7 @@
 //libraries
 import { Link } from "react-router-dom";
 
-function About() {
+function AboutPage() {
   return (
     <section className="mx-auto max-w-3xl py-6 sm:py-10">
       <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-sage-700">Houzz</p>
@@ -16,4 +16,4 @@ function About() {
   );
 }
 
-export default About;
+export default AboutPage;

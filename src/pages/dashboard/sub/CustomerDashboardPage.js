@@ -2,7 +2,7 @@
 import { Heart } from "lucide-react";
 import DashboardOverview from "../components/DashboardOverview";
 
-function CustomerDashboard() {
+function CustomerDashboardPage() {
   return (
     <DashboardOverview
       eyebrow="Customer dashboard"
@@ -15,4 +15,4 @@ function CustomerDashboard() {
   );
 }
 
-export default CustomerDashboard;
+export default CustomerDashboardPage;

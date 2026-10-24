@@ -21,14 +21,14 @@ function Navbar() {
     setOpen(false);
   }, [location]);
 
-  function handleKeyDown(event) {
+  function closeNavigationOnEscape(event) {
     if (event.key === "Escape" && open) {
       setOpen(false);
       toggle.current?.focus();
     }
   }
 
-  function handleLogout() {
+  function logoutUser() {
     logout();
     setOpen(false);
   }
@@ -56,7 +56,7 @@ function Navbar() {
         </Link>
         <button
           type="button"
-          onClick={handleLogout}
+          onClick={logoutUser}
           aria-label="Log out"
           title="Log out"
           className={mobile
@@ -70,7 +70,7 @@ function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-sage-200/60 bg-white/95 shadow-[0_2px_20px_rgba(28,42,31,0.04)] backdrop-blur-md" onKeyDown={handleKeyDown}>
+    <header className="sticky top-0 z-50 border-b border-sage-200/60 bg-white/95 shadow-[0_2px_20px_rgba(28,42,31,0.04)] backdrop-blur-md" onKeyDown={closeNavigationOnEscape}>
       <div className="h-1 bg-sage-700" />
       <nav aria-label="Main navigation" className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
         <div className="flex h-16 items-center justify-between gap-6 lg:h-[72px]">

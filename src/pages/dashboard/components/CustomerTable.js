@@ -71,6 +71,24 @@ function CustomerTable({ active = true }) {
     return () => { isActive = false; };
   }, [active, page, pageSize, retry, searchEmail]);
 
+  const searchCustomers = (event) => {
+    event.preventDefault();
+    setPage(1);
+    setSearchEmail(emailInput.trim());
+    setRetry((attempt) => attempt + 1);
+  };
+
+  const clearCustomerSearch = () => {
+    setEmailInput("");
+    setSearchEmail("");
+    setPage(1);
+  };
+
+  const changeCustomerPageSize = (size) => {
+    setPageSize(size);
+    setPage(1);
+  };
+
   return (
     <section aria-label="All customers" aria-busy={loading}>
       <h2 className="text-xl font-semibold text-ink">All customers</h2>
@@ -78,12 +96,7 @@ function CustomerTable({ active = true }) {
       <form
         role="search"
         aria-label="Search customers"
-        onSubmit={(event) => {
-          event.preventDefault();
-          setPage(1);
-          setSearchEmail(emailInput.trim());
-          setRetry((attempt) => attempt + 1);
-        }}
+        onSubmit={searchCustomers}
         className="mb-6"
       >
         <label htmlFor="customer-search-email" className="auth-label">Search by email</label>
@@ -103,11 +116,7 @@ function CustomerTable({ active = true }) {
           {(emailInput || searchEmail) && (
             <button
               type="button"
-              onClick={() => {
-                setEmailInput("");
-                setSearchEmail("");
-                setPage(1);
-              }}
+              onClick={clearCustomerSearch}
               className="rounded-full border border-sage-200 px-5 py-3 font-semibold text-sage-700 hover:bg-sage-100"
             >
               Clear
@@ -169,10 +178,7 @@ function CustomerTable({ active = true }) {
         pageSize={pageSize}
         totalItems={totalItems}
         onPageChange={setPage}
-        onPageSizeChange={(size) => {
-          setPageSize(size);
-          setPage(1);
-        }}
+        onPageSizeChange={changeCustomerPageSize}
         disabled={loading || Boolean(error)}
       />
     </section>

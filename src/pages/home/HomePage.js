@@ -1,7 +1,7 @@
 //libraries
 import { useEffect, useState } from "react";
 
-function Home() {
+function HomePage() {
   const [message, setMessage] = useState("Loading...");
   useEffect(() => {
     const controller = new AbortController();
@@ -20,4 +20,4 @@ function Home() {
   <h1>Home</h1><p>Backend : {message}</p></>;
 }
 
-export default Home;
+export default HomePage;

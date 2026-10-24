@@ -72,7 +72,14 @@ function getCompanyDetailsAPI(id) {
   return axios.get(`${endpoint}/companies/${id}`);
 }
 
-function updateCompanyProfileAPI(id, name, description, phone, website, address) {
+function updateCompanyProfileAPI(
+  id,
+  name,
+  description,
+  phone,
+  website,
+  address,
+) {
   return axios.put(`${endpoint}/companies/update/${id}`, {
     name,
     description,
@@ -83,23 +90,23 @@ function updateCompanyProfileAPI(id, name, description, phone, website, address)
 }
 
 //Platform Management User APIs
-function get_customers(page, page_size, email = ""){
+function get_customers(page, page_size, email = "") {
   return axios.get(`${endpoint}/platform/customers`, {
     params: {
       page,
       page_size,
       email: email.trim() || undefined,
-    }
+    },
   });
 }
 
-function get_companies(page, page_size, email = ""){
+function get_companies(page, page_size, email = "") {
   return axios.get(`${endpoint}/platform/companies`, {
     params: {
       page,
       page_size,
       email: email.trim() || undefined,
-    }
+    },
   });
 }
 
@@ -108,7 +115,17 @@ function update_company_status(id, status) {
     params: {
       id,
       status,
-    }
+    },
+  });
+}
+
+//Contact Enquiry APIs
+function submit_generic_form(name, phone, email, description) {
+  return axios.post(`${endpoint}/contact/form`, {
+    name,
+    phone,
+    email,
+    description,
   });
 }
 
@@ -118,16 +135,18 @@ const API = {
   registerCompanyAPI,
   updatePasswordAPI,
   logoutAPI,
-  
+
   getUserDetailsAPI,
   updateUserProfileAPI,
-  
+
   getCompanyDetailsAPI,
   updateCompanyProfileAPI,
 
   get_customers,
   get_companies,
-  update_company_status,  
+  update_company_status,
+
+  submit_generic_form,
   // createProduct,
   // updateProduct,
   // addProductVariant,
