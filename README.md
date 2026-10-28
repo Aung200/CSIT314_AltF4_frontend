@@ -1,70 +1,49 @@
-# Getting Started with Create React App
+## Main Features and User Stories
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### Authentication and Profile Management
 
-## Available Scripts
+- As a customer, I want to register an account so that I can contact designers about their designs. (Customer Account Registration)
+- As a company, I want to register an account so that I can join the platform. (Company Account Registration)
+- As a registered user, I want to log in and log out so that I can access my account. (User Login and Logout)
+- As a registered user, I want to view and update my profile and change my password so that I can maintain my account information. (Profile and Password Management)
 
-In the project directory, you can run:
+### Design Discovery
 
-### `npm start`
+- As a visitor or customer, I want to browse designs so that I can find inspiration for my home. (Design Browsing)
+- As a visitor or customer, I want to search, filter, and sort designs so that I can find designs matching my preferences and budget. (Design Search, Filtering and Sorting)
+- As a visitor or customer, I want to view a design's details and photos so that I can understand the project before making an enquiry. (Design Details and Photo Gallery)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Designer Portfolio Management
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- As a designer, I want to view and search my designs so that I can manage my portfolio. (Designer Portfolio Browsing and Search)
+- As a designer, I want to create designs and upload photos so that customers can discover my work. (Design Creation and Photo Upload)
+- As a designer, I want to update or delete my designs so that my portfolio stays current. (Design Update and Deletion)
 
-### `npm test`
+### Design Enquiry Management
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- As a customer, I want to send an enquiry about a design so that I can discuss my project with the designer. (Customer Design Enquiry Submission)
+- As a customer or designer, I want to view my enquiries and their statuses so that I can track ongoing conversations. (Enquiry List and Status Tracking)
+- As a customer or designer, I want to exchange messages and see conversation updates so that we can discuss project requirements. (Customer–Designer Messaging)
+- As a designer, I want to mark an enquiry as completed so that finished conversations can be closed. (Enquiry Completion)
+- As a customer or designer, I want to view completed conversations so that I can refer to previous discussions. (Completed Conversation Viewing)
 
-### `npm run build`
+### Platform Account Management
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- As Platform Management, I want to view and search customer and company accounts so that I can review registered accounts. (Customer and Company Account Browsing and Search)
+- As Platform Management, I want to approve, reject, or set company accounts to pending so that I can manage their account status. (Company Account Status Management)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Category Management
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- As Platform Management, I want to view, create, update, and delete design categories so that designs can be organised consistently. (Design Category Management)
 
-### `npm run eject`
+### General Enquiries
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- As a visitor or registered user, I want to submit a general enquiry through Contact Us so that I can get in touch with the company. (General Enquiry Submission)
+- As a visitor or registered user, I want to see a submission confirmation so that I know my enquiry was sent successfully. (Enquiry Submission Confirmation)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Features Not Yet Implemented
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- Company directory and company designer registration/management.
+- Company-side design management.
+- Customer favourite designs.
+- Designer view statistics and like notifications.
