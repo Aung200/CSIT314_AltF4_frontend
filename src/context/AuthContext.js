@@ -1,22 +1,16 @@
 //libraries
-import { createContext, useContext, useState } from "react";
+import { useState } from "react";
 
 //api
 import API from "../api/api";
 
-const AuthContext = createContext(null);
+//context
+import AuthContext from "./AuthContextValue";
 
-function getStoredProfile() {
-  const storedProfile = localStorage.getItem("profile");
-  if (!storedProfile) return null;
+//utils
+import getStoredProfile from "../utils/getStoredProfile";
 
-  try {
-    return JSON.parse(storedProfile);
-  } catch (error) {
-    if (error instanceof SyntaxError) return null;
-    throw error;
-  }
-}
+export { useAuth } from "../hooks/useAuth";
 
 export function AuthProvider({ children }) {
   const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem("isLoggedIn") === "true");
@@ -50,8 +44,4 @@ export function AuthProvider({ children }) {
       {children}
     </AuthContext.Provider>
   );
-}
-
-export function useAuth() {
-  return useContext(AuthContext);
 }

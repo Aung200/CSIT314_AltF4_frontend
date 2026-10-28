@@ -9,15 +9,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 //api
 import API from "../../../api/api";
 
+//utils
+import getDesignError from "../../../utils/getDesignError";
+
 const emptyDesign = {
   title: "", description: "", location: "", property_type: "HDB",
   budget: "", completion_date: "", category_id: "",
 };
-
-export function getDesignError(error, fallback) {
-  const detail = error.response?.data?.detail;
-  return (typeof detail === "string" ? detail : detail?.message) || error.response?.data?.message || fallback;
-}
 
 function DesignFormDialog({ designId, designerId, onClose, onSaved }) {
   const [design, setDesign] = useState(emptyDesign);

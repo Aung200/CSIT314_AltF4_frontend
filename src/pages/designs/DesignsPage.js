@@ -13,6 +13,9 @@ import Pagination from "../dashboard/components/Pagination";
 //api
 import API from "../../api/api";
 
+//utils
+import getDesignError from "../../utils/getDesignError";
+
 const designSortOptions = [
   { value: "created_at:desc", label: "Newest" },
   { value: "created_at:asc", label: "Oldest" },
@@ -21,11 +24,6 @@ const designSortOptions = [
   { value: "title:asc", label: "A To Z" },
   { value: "title:desc", label: "Z To A" },
 ];
-
-function getInteriorDesignError(error, fallback) {
-  const detail = error.response?.data?.detail;
-  return (typeof detail === "string" ? detail : detail?.message) || error.response?.data?.message || fallback;
-}
 
 function DesignsPage() {
   const [designs, setDesigns] = useState([]);
@@ -78,7 +76,7 @@ function DesignsPage() {
         if (active) {
           setListFailed(true);
           setTotalItems(null);
-          toast.error(getInteriorDesignError(error, "Unable to load interior designs. Please try again."), { autoClose: 5000 });
+          toast.error(getDesignError(error, "Unable to load interior designs. Please try again."), { autoClose: 5000 });
         }
       } finally {
         if (active) setLoading(false);
@@ -104,7 +102,7 @@ function DesignsPage() {
       } catch (error) {
         if (active) {
           setCategoriesFailed(true);
-          toast.error(getInteriorDesignError(error, "Unable to load categories. Please try again."), { autoClose: 5000 });
+          toast.error(getDesignError(error, "Unable to load categories. Please try again."), { autoClose: 5000 });
         }
       } finally {
         if (active) setCategoriesLoading(false);

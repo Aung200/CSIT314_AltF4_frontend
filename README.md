@@ -13,6 +13,11 @@
 - As a visitor or customer, I want to search, filter, and sort designs so that I can find designs matching my preferences and budget. (Design Search, Filtering and Sorting)
 - As a visitor or customer, I want to view a design's details and photos so that I can understand the project before making an enquiry. (Design Details and Photo Gallery)
 
+### Company Designer Registration
+
+- As a company, I want to register a designer using their email, first name, and last name so that they can join my company. (Company Designer Registration)
+- As a company, I want to see the server's registration confirmation or error message so that I know whether the designer account was created successfully. (Designer Registration Feedback)
+
 ### Designer Portfolio Management
 
 - As a designer, I want to view and search my designs so that I can manage my portfolio. (Designer Portfolio Browsing and Search)
@@ -43,7 +48,7 @@
 
 ## Features Not Yet Implemented
 
-- Company directory and company designer registration/management.
+- Company directory and company designer listing/management.
 - Company-side design management.
 - Customer favourite designs.
 - Designer view statistics and like notifications.

@@ -3,13 +3,14 @@ import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, useLocation, useSearchParams } from "react-router-dom";
 
 //components
-import { LogOut, Search } from "lucide-react";
+import { Search } from "lucide-react";
+import ProfileActions from "./ProfileActions";
 
 //context
 import { useAuth } from "../../../context/AuthContext";
 
-const linkStyle = ({ isActive }) =>
-  `rounded-lg px-4 py-3 text-base font-semibold tracking-wide transition-colors hover:bg-sage-50 hover:text-sage-700 ${isActive ? "bg-sage-50 text-sage-700" : "text-ink"}`;
+//utils
+import getNavigationLinkClassName from "../../../utils/getNavigationLinkClassName";
 
 function Navbar() {
   const [open, setOpen] = useState(false);
@@ -46,39 +47,7 @@ function Navbar() {
 
   const profileInitial = profile?.email?.trim()?.[0]?.toUpperCase() || "?";
 
-  function ProfileActions({ mobile = false }) {
-    return (
-      <div className={mobile ? "my-2 flex items-center gap-3 px-3" : "flex items-center gap-3 px-3"}>
-        <NavLink
-          to="/dashboard"
-          onClick={() => setOpen(false)}
-          className={linkStyle}
-        >
-          Dashboard
-        </NavLink>
-        <Link
-          to="/profile"
-          onClick={() => setOpen(false)}
-          aria-label="Profile"
-          title="Profile"
-          className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-sage-700 text-lg font-semibold text-white transition-colors hover:bg-ink"
-        >
-          {profileInitial}
-        </Link>
-        <button
-          type="button"
-          onClick={logoutUser}
-          aria-label="Log out"
-          title="Log out"
-          className={mobile
-            ? "inline-flex h-11 items-center justify-center rounded-xl border border-sage-200 px-4 text-sm font-semibold text-sage-700 transition-colors hover:bg-sage-50"
-            : "inline-flex h-11 items-center justify-center rounded-xl border border-sage-200 px-4 text-sm font-semibold text-sage-700 transition-colors hover:bg-sage-50"}
-        >
-          <LogOut className="h-4 w-4" />
-        </button>
-      </div>
-    );
-  }
+
 
   return (
     <header className="sticky top-0 z-50 border-b border-sage-200/60 bg-white/95 shadow-[0_2px_20px_rgba(28,42,31,0.04)] backdrop-blur-md" onKeyDown={closeNavigationOnEscape}>
@@ -89,15 +58,15 @@ function Navbar() {
             <img src={`${process.env.PUBLIC_URL}/houzzlogo.png`} alt="Houzz" width="2132" height="738" className="h-auto w-32 sm:w-36 lg:w-40" />
           </Link>
           <div className="hidden items-center gap-5 md:flex lg:gap-10">
-            <NavLink to="/designs" className={linkStyle}>
+            <NavLink to="/designs" className={getNavigationLinkClassName}>
               Interior Designs
             </NavLink>
-            <NavLink to="/companies" className={linkStyle}>
+            <NavLink to="/companies" className={getNavigationLinkClassName}>
               Companies
             </NavLink>
           </div>
           {isLoggedIn ? (
-            <div className="hidden md:block"><ProfileActions /></div>
+            <div className="hidden md:block"><ProfileActions profileInitial={profileInitial} onNavigate={() => setOpen(false)} onLogout={logoutUser} /></div>
           ) : (
             <NavLink to="/auth/login" className="hidden items-center gap-3 rounded-full bg-sage-700 px-5 py-2.5 text-base font-semibold text-white transition-colors hover:bg-ink md:inline-flex">
               Login / Sign up
@@ -118,14 +87,14 @@ function Navbar() {
         )}
         <div id="mobile-navigation" hidden={!open} className="border-t border-sage-200/60 pb-6 pt-3 md:hidden">
           <div className="flex flex-col gap-1">
-            <NavLink to="/designs" onClick={() => setOpen(false)} className={linkStyle}>
+            <NavLink to="/designs" onClick={() => setOpen(false)} className={getNavigationLinkClassName}>
               Interior Designs
             </NavLink>
-            <NavLink to="/companies" onClick={() => setOpen(false)} className={linkStyle}>
+            <NavLink to="/companies" onClick={() => setOpen(false)} className={getNavigationLinkClassName}>
               Companies
             </NavLink>
             {isLoggedIn ? (
-              <ProfileActions mobile />
+              <ProfileActions mobile profileInitial={profileInitial} onNavigate={() => setOpen(false)} onLogout={logoutUser} />
             ) : (
               <NavLink to="/auth/login" onClick={() => setOpen(false)} className="mt-3 flex items-center justify-between rounded-xl bg-sage-700 px-5 py-4 text-base font-semibold text-white hover:bg-ink">
                 Login / Sign up
