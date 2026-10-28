@@ -1,11 +1,10 @@
 //components
 import { Slider } from "../../../components/ui/slider";
 
-export const maximumBudget = 1000000;
+//utils
+import formatBudget from "../../../utils/formatBudget";
 
-function formatBudget(value) {
-  return new Intl.NumberFormat("en-SG", { style: "currency", currency: "SGD", maximumFractionDigits: 0 }).format(value);
-}
+export const maximumBudget = 1000000;
 
 function DesignFilters({ values, budgetRange, categories, categoriesLoading, categoriesFailed, onChange, onBudgetChange, onReset, onRetryCategories, canReset }) {
   return (

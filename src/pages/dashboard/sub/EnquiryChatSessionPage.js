@@ -13,16 +13,8 @@ import API from "../../../api/api";
 //context
 import { useAuth } from "../../../context/AuthContext";
 
-function formatChatTime(createdAt) {
-  return new Date(createdAt).toLocaleString("en-SG", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: "Asia/Singapore",
-  });
-}
+//utils
+import formatChatTime from "../../../utils/formatChatTime";
 
 function EnquiryChatSessionPage() {
   const { enquiryNumber } = useParams();

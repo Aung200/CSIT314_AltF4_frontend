@@ -17,6 +17,9 @@ import {
 //api
 import API from "../../../api/api";
 
+//utils
+import normalizeStatus from "../../../utils/normalizeStatus";
+
 function CompanyTable({ active = true }) {
   const [companies, setCompanies] = useState(null);
   const [page, setPage] = useState(1);
@@ -268,10 +271,6 @@ function CompanyTable({ active = true }) {
       />
     </section>
   );
-}
-
-function normalizeStatus(status) {
-  return typeof status === "string" ? status.trim().toLowerCase() : "";
 }
 
 const statusLabels = {

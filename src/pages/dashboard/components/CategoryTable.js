@@ -17,20 +17,9 @@ import API from "../../../api/api";
 //context
 import { useAuth } from "../../../context/AuthContext";
 
-function getCategoryError(error, fallback) {
-  const detail = error.response?.data?.detail;
-  return detail?.message || error.response?.data?.message ||
-    (typeof detail === "string" ? detail : "") || error.message || fallback;
-}
-
-function formatCategoryDate(value) {
-  const date = new Date(value);
-  if (!value || Number.isNaN(date.getTime())) return "Not provided";
-  return date.toLocaleString("en-SG", {
-    day: "numeric", month: "short", year: "numeric",
-    hour: "2-digit", minute: "2-digit", timeZone: "Asia/Singapore",
-  });
-}
+//utils
+import getCategoryError from "../../../utils/getCategoryError";
+import formatCategoryDate from "../../../utils/formatCategoryDate";
 
 function CategoryTable({ active = true }) {
   const { isLoggedIn, role } = useAuth();

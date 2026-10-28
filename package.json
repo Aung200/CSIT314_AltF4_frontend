@@ -33,6 +33,23 @@
     "extends": [
       "react-app",
       "react-app/jest"
+    ],
+    "overrides": [
+      {
+        "files": [
+          "src/pages/**/*.js",
+          "src/layout/**/*.js",
+          "src/context/**/*.js"
+        ],
+        "rules": {
+          "react/no-multi-comp": [
+            "error",
+            {
+              "ignoreStateless": false
+            }
+          ]
+        }
+      }
     ]
   },
   "browserslist": {

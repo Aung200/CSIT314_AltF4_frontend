@@ -18,13 +18,13 @@ function CompanyDashboardPage() {
         </Link>
       </div>
       <p className="mb-8 text-ink/70">
-        Register and manage your company’s designer employees.
+        Register designer accounts for your company.
       </p>
       <div className="border-t border-sage-200/60 pt-8 text-center">
         <Users size={32} className="mx-auto mb-4 text-sage-700" aria-hidden="true" />
         <h2 className="text-lg font-semibold text-ink">Your company’s designers</h2>
         <p className="mt-2 text-ink/70">
-          Designer management is not available yet. Your designers will appear here once it is ready.
+          Designer listing and management are not available yet. Use Add designer to register a designer account.
         </p>
       </div>
     </section>
