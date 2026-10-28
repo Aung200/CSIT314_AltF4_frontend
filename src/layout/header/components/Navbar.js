@@ -1,9 +1,9 @@
 //libraries
 import { useEffect, useRef, useState } from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation, useSearchParams } from "react-router-dom";
 
 //components
-import { LogOut } from "lucide-react";
+import { LogOut, Search } from "lucide-react";
 
 //context
 import { useAuth } from "../../../context/AuthContext";
@@ -14,18 +14,29 @@ const linkStyle = ({ isActive }) =>
 function Navbar() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const showDesignSearch = location.pathname === "/designs";
   const toggle = useRef(null);
   const { isLoggedIn, profile, logout } = useAuth();
 
   useEffect(() => {
     setOpen(false);
-  }, [location]);
+  }, [location.pathname]);
 
   function closeNavigationOnEscape(event) {
     if (event.key === "Escape" && open) {
       setOpen(false);
       toggle.current?.focus();
     }
+  }
+
+  function searchInteriorDesigns(event) {
+    const title = event.target.value;
+    setSearchParams((current) => {
+      if (title) current.set("title", title);
+      else current.delete("title");
+      return current;
+    }, { replace: true });
   }
 
   function logoutUser() {
@@ -78,7 +89,7 @@ function Navbar() {
             <img src={`${process.env.PUBLIC_URL}/houzzlogo.png`} alt="Houzz" width="2132" height="738" className="h-auto w-32 sm:w-36 lg:w-40" />
           </Link>
           <div className="hidden items-center gap-5 md:flex lg:gap-10">
-            <NavLink to="/interior-designs" className={linkStyle}>
+            <NavLink to="/designs" className={linkStyle}>
               Interior Designs
             </NavLink>
             <NavLink to="/companies" className={linkStyle}>
@@ -98,9 +109,16 @@ function Navbar() {
             </svg>
           </button>
         </div>
+        {showDesignSearch && (
+          <div role="search" aria-label="Search interior designs" className="relative mb-4 max-w-2xl">
+            <label htmlFor="navigation-design-search" className="sr-only">Search designs by title</label>
+            <Search size={20} aria-hidden="true" className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sage-700" />
+            <input id="navigation-design-search" type="search" value={searchParams.get("title") || ""} onChange={searchInteriorDesigns} placeholder="Search interior designs" className="auth-input bg-sage-50 pl-12" />
+          </div>
+        )}
         <div id="mobile-navigation" hidden={!open} className="border-t border-sage-200/60 pb-6 pt-3 md:hidden">
           <div className="flex flex-col gap-1">
-            <NavLink to="/interior-designs" onClick={() => setOpen(false)} className={linkStyle}>
+            <NavLink to="/designs" onClick={() => setOpen(false)} className={linkStyle}>
               Interior Designs
             </NavLink>
             <NavLink to="/companies" onClick={() => setOpen(false)} className={linkStyle}>

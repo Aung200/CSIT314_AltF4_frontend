@@ -27,7 +27,7 @@ function FooterContent() {
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 sm:gap-16 lg:gap-24">
             <nav aria-label="Explore" className="flex flex-col items-start gap-3 text-base text-sage-700">
               <h2 className="mb-1 text-xs font-semibold uppercase tracking-[0.2em] text-ink">Explore</h2>
-              <Link to="/interior-designs" className="hover:text-ink hover:underline hover:underline-offset-4">Interior Designs</Link>
+              <Link to="/designs" className="hover:text-ink hover:underline hover:underline-offset-4">Interior Designs</Link>
               <Link to="/companies" className="hover:text-ink hover:underline hover:underline-offset-4">Companies</Link>
               {!hideAuthLink && (
                 <Link to="/auth/login" className="hover:text-ink hover:underline hover:underline-offset-4">Login / Sign up</Link>

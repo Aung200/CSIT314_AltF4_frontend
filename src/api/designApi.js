@@ -1,8 +1,8 @@
 //api
 import client from "./client";
 
-function get_interior_designs(page = 1, page_size = 10) {
-  return client.get("/interior-designs", { params: { page, page_size } });
+function get_interior_designs(page = 1, page_size = 10, filters = {}) {
+  return client.get("/interior-designs", { params: { page, page_size, ...filters } });
 }
 
 function get_designer_designs(designer_id, page = 1, page_size = 10, filters = {}) {

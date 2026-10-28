@@ -1,5 +1,6 @@
 //libraries
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
 //components
@@ -7,7 +8,6 @@ import { ChevronDown, ChevronUp, Eye, MoreHorizontal, Pencil, Plus, Search, Tras
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../../components/ui/dropdown-menu";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../../../components/ui/dialog";
 import DesignFormDialog, { getDesignError } from "./DesignFormDialog";
-import DesignDetailsDialog from "./DesignDetailsDialog";
 import Pagination from "./Pagination";
 
 //api
@@ -44,7 +44,6 @@ function DesignTable({ designerId }) {
   const [listFailed, setListFailed] = useState(false);
   const [reload, setReload] = useState(0);
   const [form, setForm] = useState(null);
-  const [viewDesignId, setViewDesignId] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleting, setDeleting] = useState(false);
   const mountedRef = useRef(false);
@@ -138,10 +137,6 @@ function DesignTable({ designerId }) {
     setForm({ designId: design.id });
   };
 
-  const viewDesignDetails = (design) => {
-    setViewDesignId(design.id);
-  };
-
   const finishDesignSave = (message) => {
     setForm(null);
     toast.success(message, { autoClose: 5000 });
@@ -226,16 +221,15 @@ function DesignTable({ designerId }) {
               ["Budget", "budget"], ["Completion date"], ["Created date", "created_at"], ["Actions"],
             ].map(([heading, sortBy]) => (
               <th key={heading} scope="col" aria-sort={sortBy ? (filters.sort_by === sortBy ? (filters.sort_order === "asc" ? "ascending" : "descending") : "none") : undefined} className="whitespace-nowrap px-5 py-4 font-semibold">
-                <div className="flex items-center gap-2">
-                  {heading}
-                  {sortBy && <span className="flex flex-col">
-                    {[["asc", ChevronUp, "ascending"], ["desc", ChevronDown, "descending"]].map(([order, Icon, label]) => (
-                      <button key={order} type="button" onClick={() => sortDesigns(sortBy, order)} disabled={loading} aria-label={`Sort ${heading.toLowerCase()} ${label}`} aria-pressed={filters.sort_by === sortBy && filters.sort_order === order} className={`rounded p-0.5 hover:bg-sage-200 disabled:opacity-50 ${filters.sort_by === sortBy && filters.sort_order === order ? "bg-sage-200 text-sage-700" : "text-ink/40"}`}>
-                        <Icon size={16} aria-hidden="true" />
-                      </button>
-                    ))}
-                  </span>}
-                </div>
+                {sortBy ? (
+                  <button type="button" onClick={() => sortDesigns(sortBy, filters.sort_by === sortBy && filters.sort_order === "asc" ? "desc" : "asc")} disabled={loading} aria-label={`Sort ${heading.toLowerCase()} ${filters.sort_by === sortBy && filters.sort_order === "asc" ? "descending" : "ascending"}`} className="group inline-flex items-center gap-1 rounded-sm text-left transition-colors hover:text-sage-700 disabled:cursor-wait">
+                    {heading}
+                    <span className="ml-1 flex shrink-0 flex-col -space-y-[5px]" aria-hidden="true">
+                      <ChevronUp size={18} strokeWidth={2} className={filters.sort_by === sortBy && filters.sort_order === "asc" ? "text-sage-700" : "text-ink/40 group-hover:text-ink/60"} />
+                      <ChevronDown size={18} strokeWidth={2} className={filters.sort_by === sortBy && filters.sort_order === "desc" ? "text-sage-700" : "text-ink/40 group-hover:text-ink/60"} />
+                    </span>
+                  </button>
+                ) : heading}
               </th>
             ))}
           </tr></thead>
@@ -255,7 +249,7 @@ function DesignTable({ designerId }) {
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild><button type="button" aria-label={`Actions for ${design.title}`} className="rounded-lg p-2 text-sage-700 hover:bg-sage-100"><MoreHorizontal size={20} aria-hidden="true" /></button></DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="z-[60] w-40 rounded-2xl border-sage-200 p-2">
-                      <DropdownMenuItem onSelect={() => viewDesignDetails(design)} className="rounded-xl px-3 py-2.5"><Eye size={16} aria-hidden="true" /> View</DropdownMenuItem>
+                      <DropdownMenuItem asChild className="rounded-xl px-3 py-2.5"><Link to={`/designs/${encodeURIComponent(design.id)}`}><Eye size={16} aria-hidden="true" /> View</Link></DropdownMenuItem>
                       <DropdownMenuItem onSelect={() => showEditDesignForm(design)} className="rounded-xl px-3 py-2.5"><Pencil size={16} aria-hidden="true" /> Edit</DropdownMenuItem>
                       <DropdownMenuItem onSelect={() => requestDesignDeletion(design)} className="rounded-xl px-3 py-2.5 text-red-700 focus:bg-red-50 focus:text-red-700"><Trash2 size={16} aria-hidden="true" /> Delete</DropdownMenuItem>
                     </DropdownMenuContent>
@@ -268,7 +262,6 @@ function DesignTable({ designerId }) {
       </div>
       <Pagination page={page} pageSize={pageSize} totalItems={totalItems} onPageChange={setPage} onPageSizeChange={changeDesignPageSize} disabled={loading} />
       {form && <DesignFormDialog designId={form.designId} designerId={designerId} onClose={() => setForm(null)} onSaved={finishDesignSave} />}
-      {viewDesignId && <DesignDetailsDialog key={viewDesignId} designId={viewDesignId} onClose={() => setViewDesignId(null)} />}
       {deleteTarget && <Dialog open onOpenChange={closeDesignDeletion}>
         <DialogContent className="w-[calc(100%_-_2rem)] rounded-2xl border-sage-200 text-ink" showCloseButton={!deleting}>
           <DialogHeader>

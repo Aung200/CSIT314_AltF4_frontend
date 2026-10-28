@@ -1,6 +1,6 @@
 //libraries
 import { Suspense, lazy } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 
 //components
 import Header from "./layout/header/index";
@@ -11,6 +11,8 @@ const AuthPage = lazy(() => import("./pages/auth/AuthPage"));
 const ProfilePage = lazy(() => import("./pages/profile/ProfilePage"));
 const DashboardPage = lazy(() => import("./pages/dashboard/DashboardPage"));
 const HomePage = lazy(() => import("./pages/home/HomePage"));
+const DesignsPage = lazy(() => import("./pages/designs/DesignsPage"));
+const DesignDetailsPage = lazy(() => import("./pages/designs/DesignDetailsPage"));
 const PageNotFoundPage = lazy(() => import("./pages/error/PageNotFoundPage"));
 
 const AboutPage = lazy(() => import("./pages/about/AboutPage"));
@@ -25,7 +27,9 @@ function App() {
       <Suspense fallback={<p>Loading...</p>}>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/designs" element={<><h1>Interior Designs</h1><p>Explore inspiring spaces. Designs coming soon.</p></>} />
+          <Route path="/designs" element={<DesignsPage />} />
+          <Route path="/designs/:designId" element={<DesignDetailsPage />} />
+          <Route path="/interior-designs" element={<Navigate to="/designs" replace />} />
           <Route path="/companies" element={<><h1>Companies</h1><p>Find the right professionals for your home. Directory coming soon.</p></>} />
           <Route path="/auth/*" element={<AuthPage />} />
           <Route path="/profile/*" element={<ProfilePage />} />

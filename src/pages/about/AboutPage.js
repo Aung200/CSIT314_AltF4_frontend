@@ -10,7 +10,7 @@ function AboutPage() {
       <div className="rounded-2xl border border-sage-200/60 bg-white p-6 sm:p-8">
         <h2 className="mb-3 text-xl font-semibold">A home that feels like you</h2>
         <p className="mb-6 leading-relaxed text-ink/70">Houzz brings interior inspiration and company discovery together, helping you explore ideas and find professionals for your next home project.</p>
-        <Link to="/interior-designs" className="inline-flex rounded-full bg-sage-700 px-6 py-3 font-semibold text-white hover:bg-ink">Explore Interior Designs</Link>
+        <Link to="/designs" className="inline-flex rounded-full bg-sage-700 px-6 py-3 font-semibold text-white hover:bg-ink">Explore Interior Designs</Link>
       </div>
     </section>
   );
