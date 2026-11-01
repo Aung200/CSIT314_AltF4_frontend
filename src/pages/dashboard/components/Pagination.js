@@ -16,7 +16,7 @@ function Pagination({ page, pageSize, totalItems, onPageChange, onPageSizeChange
             value={pageSize}
             onChange={(event) => onPageSizeChange(Number(event.target.value))}
             disabled={disabled || !available}
-            className="rounded-lg border border-sage-200 bg-white px-2 py-2 disabled:opacity-50"
+            className="auth-select rounded-lg border border-sage-200 bg-white px-2 py-2 disabled:opacity-50"
           >
             {[10, 25, 50].map((size) => <option key={size} value={size}>{size}</option>)}
           </select>

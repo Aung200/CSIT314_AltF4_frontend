@@ -7,6 +7,7 @@ import { ArrowLeft, LoaderCircle, MapPin } from "lucide-react";
 import { ToastContainer, toast } from "react-toastify";
 import DesignImageGallery from "./DesignImageGallery";
 import DesignEnquiryForm from "./DesignEnquiryForm";
+import RelatedDesigns from "./RelatedDesigns";
 
 //api
 import API from "../../../api/api";
@@ -99,6 +100,7 @@ function DesignDetails({ designId }) {
               <DesignEnquiryForm designId={design.id} />
             </div>
           </div>
+          {design.category_id && categoryName !== "Not available" && <RelatedDesigns designId={design.id} categoryId={design.category_id} categoryName={categoryName} />}
         </>
       ) : (
         <div className="rounded-2xl border border-sage-200/60 bg-white px-5 py-16 text-center">

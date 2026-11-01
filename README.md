@@ -13,6 +13,12 @@
 - As a visitor or customer, I want to search, filter, and sort designs so that I can find designs matching my preferences and budget. (Design Search, Filtering and Sorting)
 - As a visitor or customer, I want to view a design's details and photos so that I can understand the project before making an enquiry. (Design Details and Photo Gallery)
 
+### Company Directory
+
+- Browse approved companies with images and contact details.
+- Search by company name or email and paginate matching companies.
+- The directory uses `get_companies` and filters its results locally because the current API has no approval-status or name filter.
+
 ### Company Designer Registration
 
 - As a company, I want to register a designer using their email, first name, and last name so that they can join my company. (Company Designer Registration)
@@ -48,7 +54,7 @@
 
 ## Features Not Yet Implemented
 
-- Company directory and company designer listing/management.
-- Company-side design management.
+- Company designer listing/management.
+- Dynamic company designer selection (design management currently uses one temporary designer option).
 - Customer favourite designs.
 - Designer view statistics and like notifications.

@@ -17,7 +17,8 @@ const emptyDesign = {
   budget: "", completion_date: "", category_id: "",
 };
 
-function DesignFormDialog({ designId, designerId, onClose, onSaved }) {
+function DesignFormDialog({ designId, designerId, designers, onClose, onSaved }) {
+  const [selectedDesignerId, setSelectedDesignerId] = useState(designerId || designers?.[0]?.id || "");
   const [design, setDesign] = useState(emptyDesign);
   const [categories, setCategories] = useState([]);
   const [images, setImages] = useState([]);
@@ -61,6 +62,7 @@ function DesignFormDialog({ designId, designerId, onClose, onSaved }) {
             property_type: details.property_type || "HDB", budget: String(details.budget ?? ""),
             completion_date: details.completion_date?.slice(0, 10) || "", category_id: details.category_id || "",
           });
+          setSelectedDesignerId(details.designer_id || designerId || "");
           setSavedImages(details.images || []);
           setRemovedImageIds([]);
         }
@@ -75,7 +77,7 @@ function DesignFormDialog({ designId, designerId, onClose, onSaved }) {
     };
     loadDesignForm();
     return () => { active = false; };
-  }, [designId, retry]);
+  }, [designId, designerId, retry]);
 
   useEffect(() => {
     const nextPreviews = images.map((file) => ({ file, url: URL.createObjectURL(file) }));
@@ -119,7 +121,7 @@ function DesignFormDialog({ designId, designerId, onClose, onSaved }) {
   const saveDesign = async (event) => {
     event.preventDefault();
     if (savingRef.current || loading || loadFailed) return;
-    if (!design.title.trim() || !design.description.trim() || !design.location.trim() || !design.category_id || !design.completion_date) {
+    if (!selectedDesignerId || !design.title.trim() || !design.description.trim() || !design.location.trim() || !design.category_id || !design.completion_date) {
       toast.error("Please complete all the design details.", { autoClose: 5000 });
       return;
     }
@@ -135,7 +137,7 @@ function DesignFormDialog({ designId, designerId, onClose, onSaved }) {
     setSaving(true);
     const payload = {
       ...design, title: design.title.trim(), description: design.description.trim(),
-      location: design.location.trim(), budget: Number(design.budget), designer_id: designerId,
+      location: design.location.trim(), budget: Number(design.budget), designer_id: selectedDesignerId,
     };
     try {
       if (editing) await API.update_design(designId, payload, images, removedImageIds);
@@ -161,6 +163,13 @@ function DesignFormDialog({ designId, designerId, onClose, onSaved }) {
         ) : (
           <form onSubmit={saveDesign} aria-label={editing ? "Edit design" : "Add design"}>
             <fieldset disabled={saving} className="grid gap-5 sm:grid-cols-2">
+              {designers && <div className="sm:col-span-2">
+                <label htmlFor="design-designer" className="auth-label">Designer</label>
+                <select id="design-designer" value={selectedDesignerId} onChange={(event) => setSelectedDesignerId(event.target.value)} required disabled={editing} className="auth-input">
+                  <option value="">Select a designer</option>
+                  {designers.map((designer) => <option key={designer.id} value={designer.id}>{designer.email}</option>)}
+                </select>
+              </div>}
               <div className="sm:col-span-2">
                 <label htmlFor="design-title" className="auth-label">Design title</label>
                 <input id="design-title" name="title" value={design.title} onChange={updateDesignField} required className="auth-input" />

@@ -4,7 +4,7 @@ import { useSearchParams } from "react-router-dom";
 
 //components
 import { ToastContainer, toast } from "react-toastify";
-import { ChevronDown, Images, LoaderCircle } from "lucide-react";
+import { ChevronDown, Images, LoaderCircle, Search } from "lucide-react";
 import DesignFilters, { maximumBudget } from "./components/DesignFilters";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from "../../components/ui/dropdown-menu";
 import DesignCard from "./components/DesignCard";
@@ -112,6 +112,16 @@ function DesignsPage() {
     return () => { active = false; };
   }, [categoryRetry]);
 
+  const searchInteriorDesigns = (event) => {
+    const value = event.target.value;
+    setPage(1);
+    setSearchParams((current) => {
+      if (value) current.set("title", value);
+      else current.delete("title");
+      return current;
+    }, { replace: true });
+  };
+
   const updateInteriorDesignFilters = (event) => {
     const { name, value } = event.target;
     setFilters((current) => ({ ...current, [name]: value }));
@@ -157,6 +167,11 @@ function DesignsPage() {
         <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-sage-100">Find your inspiration</p>
         <h1 id="designs-title" className="max-w-2xl text-4xl sm:text-5xl">Designs</h1>
         <p className="max-w-xl text-base leading-relaxed text-white/90 sm:text-lg">Thoughtful spaces. Fresh ideas. Find a design that feels like home.</p>
+        <div role="search" aria-label="Search interior designs" className="relative mt-6 max-w-2xl">
+          <label htmlFor="banner-design-search" className="sr-only">Search designs by title</label>
+          <Search size={20} aria-hidden="true" className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sage-700" />
+          <input id="banner-design-search" type="search" value={title} onChange={searchInteriorDesigns} placeholder="Search interior designs" className="auth-input bg-white pl-12 shadow-sm" />
+        </div>
       </div>
       <DesignFilters values={filters} budgetRange={budgetRange} categories={categories} categoriesLoading={categoriesLoading} categoriesFailed={categoriesFailed} onChange={updateInteriorDesignFilters} onBudgetChange={changeInteriorDesignBudget} onReset={resetInteriorDesignFilters} onRetryCategories={() => setCategoryRetry((value) => value + 1)} canReset={canReset} />
       <div className="flex flex-wrap items-center justify-between gap-4 py-6">

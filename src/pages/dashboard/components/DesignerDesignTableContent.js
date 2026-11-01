@@ -4,10 +4,11 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
 //components
-import { ChevronDown, ChevronUp, Eye, MoreHorizontal, Pencil, Plus, Search, Trash2 } from "lucide-react";
+import { CheckCircle2, Clock3, ChevronDown, ChevronUp, Eye, Filter, RotateCcw, MoreHorizontal, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../../components/ui/dropdown-menu";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../../../components/ui/dialog";
 import DesignFormDialog from "./DesignFormDialog";
+import DesignStatusBadge from "./DesignStatusBadge";
 import Pagination from "./Pagination";
 
 //api
@@ -21,7 +22,7 @@ const defaultDesignFilters = {
   title: "", property_type: "", category_type: "",
 };
 
-function DesignerDesignTableContent({ designerId }) {
+function DesignerDesignTableContent({ designerId, designers, company = false }) {
   const [designs, setDesigns] = useState([]);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -35,6 +36,8 @@ function DesignerDesignTableContent({ designerId }) {
   const [form, setForm] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const [updatingStatus, setUpdatingStatus] = useState(null);
+  const statusSavingRef = useRef(false);
   const mountedRef = useRef(false);
   const deletingRef = useRef(false);
 
@@ -89,7 +92,7 @@ function DesignerDesignTableContent({ designerId }) {
 
   const categoryNames = new Map(categories.map((category) => [category.id, category.name]));
   const hasFilters = Boolean(filters.title || filters.property_type || filters.category_type);
-  const hasFilterChanges = Object.keys(defaultDesignFilters).some((key) => filterInputs[key] !== defaultDesignFilters[key]);
+  const hasFilterChanges = Object.keys(defaultDesignFilters).some((key) => filterInputs[key].trim() !== defaultDesignFilters[key]);
 
   const updateDesignFilters = (event) => {
     const { name, value } = event.target;
@@ -98,6 +101,7 @@ function DesignerDesignTableContent({ designerId }) {
 
   const applyDesignFilters = (event) => {
     event.preventDefault();
+    if (loading || !hasFilterChanges) return;
     setFilters((current) => ({
       ...current,
       title: filterInputs.title.trim() || undefined,
@@ -160,6 +164,23 @@ function DesignerDesignTableContent({ designerId }) {
     }
   };
 
+  const changeDesignStatus = async (design, status) => {
+    if (statusSavingRef.current || !company || !["Reviewing", "Approved"].includes(status)) return;
+    statusSavingRef.current = true;
+    setUpdatingStatus(design.id);
+    try {
+      await API.update_design(design.id, { status });
+      if (!mountedRef.current) return;
+      setDesigns((current) => current.map((item) => item.id === design.id ? { ...item, status } : item));
+      toast.success("Design status updated successfully.", { autoClose: 5000 });
+    } catch (error) {
+      if (mountedRef.current) toast.error(getDesignError(error, "Unable to update design status. Please try again."), { autoClose: 5000 });
+    } finally {
+      statusSavingRef.current = false;
+      if (mountedRef.current) setUpdatingStatus(null);
+    }
+  };
+
   const changeDesignPageSize = (size) => {
     setPageSize(size);
     setPage(1);
@@ -185,20 +206,24 @@ function DesignerDesignTableContent({ designerId }) {
         <div>
           <label htmlFor="design-filter-property" className="auth-label">Property type</label>
           <select id="design-filter-property" name="property_type" value={filterInputs.property_type} onChange={updateDesignFilters} className="auth-input">
-            <option value="">All property types</option>
+            <option value="">All</option>
             {["HDB", "Condo", "Landed"].map((type) => <option key={type} value={type}>{type}</option>)}
           </select>
         </div>
         <div>
           <label htmlFor="design-filter-category" className="auth-label">Category</label>
           <select id="design-filter-category" name="category_type" value={filterInputs.category_type} onChange={updateDesignFilters} className="auth-input">
-            <option value="">All categories</option>
+            <option value="">All</option>
             {categories.map((category) => <option key={category.id} value={category.name}>{category.name}</option>)}
           </select>
         </div>
         <div className="flex min-h-[50px] flex-wrap items-center gap-4 sm:col-span-2 lg:col-span-1 lg:flex-nowrap">
-          <button type="submit" className="whitespace-nowrap rounded-full bg-sage-700 px-5 py-2.5 font-semibold text-white hover:bg-ink">Apply filters</button>
-          {(hasFilterChanges || hasFilters || filters.sort_by !== "created_at" || filters.sort_order !== "desc") && <button type="button" onClick={clearDesignFilters} className="whitespace-nowrap text-sm font-semibold text-sage-700 underline">Reset filters</button>}
+          <button type="submit" aria-label="Apply filters" title="Apply filters" disabled={loading || !hasFilterChanges} className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-sage-700 text-white transition-colors hover:bg-ink disabled:cursor-not-allowed disabled:opacity-40">
+            <Filter size={20} aria-hidden="true" />
+          </button>
+          <button type="button" onClick={clearDesignFilters} aria-label="Reset filters" title="Reset filters" disabled={loading || !(hasFilterChanges || hasFilters || filters.sort_by !== "created_at" || filters.sort_order !== "desc")} className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-sage-200 text-sage-700 transition-colors hover:bg-sage-100 disabled:cursor-not-allowed disabled:opacity-40">
+            <RotateCcw size={20} aria-hidden="true" />
+          </button>
         </div>
       </form>
       <div className="overflow-x-auto rounded-2xl border border-sage-200/60" aria-busy={loading}>
@@ -206,7 +231,7 @@ function DesignerDesignTableContent({ designerId }) {
           <caption className="sr-only">Your interior designs</caption>
           <thead className="bg-sage-50 text-ink"><tr>
             {[
-              ["Design title", "title"], ["Category"], ["Property type"], ["Location"],
+              ["Design title", "title"], ["Category"], ["Property type"], ["Status"],
               ["Budget", "budget"], ["Completion date"], ["Created date", "created_at"], ["Actions"],
             ].map(([heading, sortBy]) => (
               <th key={heading} scope="col" aria-sort={sortBy ? (filters.sort_by === sortBy ? (filters.sort_order === "asc" ? "ascending" : "descending") : "none") : undefined} className="whitespace-nowrap px-5 py-4 font-semibold">
@@ -230,16 +255,22 @@ function DesignerDesignTableContent({ designerId }) {
                 <td className="min-w-[10rem] break-words px-5 py-4 font-medium text-ink">{design.title}</td>
                 <td className="px-5 py-4 text-ink/70">{categoryNames.get(design.category_id) || "Not available"}</td>
                 <td className="px-5 py-4 text-ink/70">{design.property_type}</td>
-                <td className="px-5 py-4 text-ink/70">{design.location}</td>
+                <td className="px-5 py-4"><DesignStatusBadge status={design.status || "Reviewing"} /></td>
                 <td className="whitespace-nowrap px-5 py-4 text-ink/70">{design.budget == null ? "Not provided" : new Intl.NumberFormat("en-SG", { style: "currency", currency: "SGD" }).format(design.budget)}</td>
                 <td className="whitespace-nowrap px-5 py-4 text-ink/70">{formatDesignDate(design.completion_date)}</td>
                 <td className="whitespace-nowrap px-5 py-4 text-ink/70">{formatDesignDate(design.created_at)}</td>
                 <td className="px-5 py-4">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild><button type="button" aria-label={`Actions for ${design.title}`} className="rounded-lg p-2 text-sage-700 hover:bg-sage-100"><MoreHorizontal size={20} aria-hidden="true" /></button></DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="z-[60] w-40 rounded-2xl border-sage-200 p-2">
+                    <DropdownMenuContent align="end" className="z-[60] w-56 rounded-2xl border-sage-200 p-2">
                       <DropdownMenuItem asChild className="rounded-xl px-3 py-2.5"><Link to={`/designs/${encodeURIComponent(design.id)}`}><Eye size={16} aria-hidden="true" /> View</Link></DropdownMenuItem>
                       <DropdownMenuItem onSelect={() => showEditDesignForm(design)} className="rounded-xl px-3 py-2.5"><Pencil size={16} aria-hidden="true" /> Edit</DropdownMenuItem>
+                      {company && ["Approved", "Reviewing"].map((status) => (
+                        <DropdownMenuItem key={status} disabled={updatingStatus !== null || (design.status || "Reviewing") === status} onSelect={() => changeDesignStatus(design, status)} className={`rounded-xl px-3 py-2.5 ${status === "Approved" ? "text-green-800 focus:bg-green-50 focus:text-green-800" : "text-amber-800 focus:bg-amber-50 focus:text-amber-800"}`}>
+                          {status === "Approved" ? <CheckCircle2 size={16} aria-hidden="true" /> : <Clock3 size={16} aria-hidden="true" />}
+                          {status === "Approved" ? "Approve" : "Mark as reviewing"}
+                        </DropdownMenuItem>
+                      ))}
                       <DropdownMenuItem onSelect={() => requestDesignDeletion(design)} className="rounded-xl px-3 py-2.5 text-red-700 focus:bg-red-50 focus:text-red-700"><Trash2 size={16} aria-hidden="true" /> Delete</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -250,7 +281,7 @@ function DesignerDesignTableContent({ designerId }) {
         </table>
       </div>
       <Pagination page={page} pageSize={pageSize} totalItems={totalItems} onPageChange={setPage} onPageSizeChange={changeDesignPageSize} disabled={loading} />
-      {form && <DesignFormDialog designId={form.designId} designerId={designerId} onClose={() => setForm(null)} onSaved={finishDesignSave} />}
+      {form && <DesignFormDialog designId={form.designId} designerId={designerId} designers={designers} onClose={() => setForm(null)} onSaved={finishDesignSave} />}
       {deleteTarget && <Dialog open onOpenChange={closeDesignDeletion}>
         <DialogContent className="w-[calc(100%_-_2rem)] rounded-2xl border-sage-200 text-ink" showCloseButton={!deleting}>
           <DialogHeader>
