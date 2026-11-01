@@ -1,9 +1,8 @@
 //libraries
 import { useEffect, useRef, useState } from "react";
-import { Link, NavLink, useLocation, useSearchParams } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 
 //components
-import { Search } from "lucide-react";
 import ProfileActions from "./ProfileActions";
 
 //context
@@ -15,8 +14,6 @@ import getNavigationLinkClassName from "../../../utils/getNavigationLinkClassNam
 function Navbar() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const showDesignSearch = location.pathname === "/designs";
   const toggle = useRef(null);
   const { isLoggedIn, profile, logout } = useAuth();
 
@@ -29,15 +26,6 @@ function Navbar() {
       setOpen(false);
       toggle.current?.focus();
     }
-  }
-
-  function searchInteriorDesigns(event) {
-    const title = event.target.value;
-    setSearchParams((current) => {
-      if (title) current.set("title", title);
-      else current.delete("title");
-      return current;
-    }, { replace: true });
   }
 
   function logoutUser() {
@@ -64,6 +52,9 @@ function Navbar() {
             <NavLink to="/companies" className={getNavigationLinkClassName}>
               Companies
             </NavLink>
+            <NavLink to="/contact" className={getNavigationLinkClassName}>
+              Contact Us
+            </NavLink>
           </div>
           {isLoggedIn ? (
             <div className="hidden md:block"><ProfileActions profileInitial={profileInitial} onNavigate={() => setOpen(false)} onLogout={logoutUser} /></div>
@@ -78,13 +69,6 @@ function Navbar() {
             </svg>
           </button>
         </div>
-        {showDesignSearch && (
-          <div role="search" aria-label="Search interior designs" className="relative mb-4 max-w-2xl">
-            <label htmlFor="navigation-design-search" className="sr-only">Search designs by title</label>
-            <Search size={20} aria-hidden="true" className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sage-700" />
-            <input id="navigation-design-search" type="search" value={searchParams.get("title") || ""} onChange={searchInteriorDesigns} placeholder="Search interior designs" className="auth-input bg-sage-50 pl-12" />
-          </div>
-        )}
         <div id="mobile-navigation" hidden={!open} className="border-t border-sage-200/60 pb-6 pt-3 md:hidden">
           <div className="flex flex-col gap-1">
             <NavLink to="/designs" onClick={() => setOpen(false)} className={getNavigationLinkClassName}>
@@ -92,6 +76,9 @@ function Navbar() {
             </NavLink>
             <NavLink to="/companies" onClick={() => setOpen(false)} className={getNavigationLinkClassName}>
               Companies
+            </NavLink>
+            <NavLink to="/contact" onClick={() => setOpen(false)} className={getNavigationLinkClassName}>
+              Contact Us
             </NavLink>
             {isLoggedIn ? (
               <ProfileActions mobile profileInitial={profileInitial} onNavigate={() => setOpen(false)} onLogout={logoutUser} />

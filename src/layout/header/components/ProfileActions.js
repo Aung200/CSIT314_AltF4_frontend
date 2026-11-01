@@ -2,10 +2,7 @@
 import { Link, NavLink } from "react-router-dom";
 
 //components
-import { LogOut } from "lucide-react";
-
-//utils
-import getNavigationLinkClassName from "../../../utils/getNavigationLinkClassName";
+import { LayoutDashboard, LogOut, Pencil } from "lucide-react";
 
 function ProfileActions({ mobile = false, profileInitial, onNavigate, onLogout }) {
   return (
@@ -13,18 +10,23 @@ function ProfileActions({ mobile = false, profileInitial, onNavigate, onLogout }
       <NavLink
         to="/dashboard"
         onClick={onNavigate}
-        className={getNavigationLinkClassName}
+        aria-label="Dashboard"
+        title="Dashboard"
+        className={({ isActive }) => `inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border transition-colors hover:bg-sage-50 ${isActive ? "border-sage-700 bg-sage-50 text-sage-700" : "border-sage-200 text-sage-700"}`}
       >
-        Dashboard
+        <LayoutDashboard size={20} aria-hidden="true" />
       </NavLink>
       <Link
         to="/profile"
         onClick={onNavigate}
-        aria-label="Profile"
-        title="Profile"
-        className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-sage-700 text-lg font-semibold text-white transition-colors hover:bg-ink"
+        aria-label="Edit profile"
+        title="Edit profile"
+        className="group relative inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 border-white bg-sage-700 text-lg font-semibold text-white ring-1 ring-sage-200 transition-colors hover:bg-ink hover:ring-sage-700"
       >
-        {profileInitial}
+        <span aria-hidden="true">{profileInitial}</span>
+        <span className="absolute -bottom-1 -right-1 inline-flex h-5 w-5 items-center justify-center rounded-full border border-sage-200 bg-white text-sage-700 shadow-sm transition-colors group-hover:bg-sage-50">
+          <Pencil size={11} aria-hidden="true" />
+        </span>
       </Link>
       <button
         type="button"

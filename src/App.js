@@ -11,6 +11,7 @@ const AuthPage = lazy(() => import("./pages/auth/AuthPage"));
 const ProfilePage = lazy(() => import("./pages/profile/ProfilePage"));
 const DashboardPage = lazy(() => import("./pages/dashboard/DashboardPage"));
 const HomePage = lazy(() => import("./pages/home/HomePage"));
+const CompaniesPage = lazy(() => import("./pages/companies/CompaniesPage"));
 const DesignsPage = lazy(() => import("./pages/designs/DesignsPage"));
 const DesignDetailsPage = lazy(() => import("./pages/designs/DesignDetailsPage"));
 const PageNotFoundPage = lazy(() => import("./pages/error/PageNotFoundPage"));
@@ -30,7 +31,7 @@ function App() {
           <Route path="/designs" element={<DesignsPage />} />
           <Route path="/designs/:designId" element={<DesignDetailsPage />} />
           <Route path="/interior-designs" element={<Navigate to="/designs" replace />} />
-          <Route path="/companies" element={<><h1>Companies</h1><p>Find the right professionals for your home. Directory coming soon.</p></>} />
+          <Route path="/companies" element={<CompaniesPage />} />
           <Route path="/auth/*" element={<AuthPage />} />
           <Route path="/profile/*" element={<ProfilePage />} />
           <Route path="/dashboard/*" element={<DashboardPage />} />
