@@ -2,25 +2,20 @@
 import { useSearchParams } from "react-router-dom";
 
 //components
-import { Bell, Eye, Images, MessageCircle } from "lucide-react";
+import { Heart, MessageCircle } from "lucide-react";
 import { ToastContainer } from "react-toastify";
-import EnquiryList from "../components/EnquiryList";
-import DesignerDesignTable from "../components/DesignerDesignTable";
+import CustomerFavouriteDesigns from "../components/customer/CustomerFavouriteDesigns";
+import EnquiryList from "../components/shared/EnquiryList";
 
 const tabs = [
-  { id: "designs", label: "Your designs", icon: Images },
+  { id: "favourites", label: "Favourite designs", icon: Heart },
   { id: "enquiries", label: "Enquiries", icon: MessageCircle },
 ];
 
-const designSections = [
-  { title: "Design views", description: "See how many views your designs receive.", icon: Eye },
-  { title: "Like alerts", description: "Get notified when a customer likes your design.", icon: Bell },
-];
-
-function DesignerDashboardPage() {
+function CustomerDashboardPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedTab = searchParams.get("tab") === "chats" ? "enquiries" : searchParams.get("tab");
-  const activeTab = tabs.some((tab) => tab.id === selectedTab) ? selectedTab : "designs";
+  const activeTab = tabs.some((tab) => tab.id === selectedTab) ? selectedTab : "favourites";
 
   const selectDashboardTab = (id) => {
     setSearchParams((params) => {
@@ -38,25 +33,27 @@ function DesignerDashboardPage() {
     else return;
 
     event.preventDefault();
-    document.getElementById(`designer-tab-${tabs[nextIndex].id}`)?.focus();
+    document.getElementById(`customer-tab-${tabs[nextIndex].id}`)?.focus();
     selectDashboardTab(tabs[nextIndex].id);
   };
 
   return (
     <section className="auth-card w-full max-w-none" aria-labelledby="dashboard-title">
       <ToastContainer />
-      <p className="auth-eyebrow">Designer dashboard</p>
+      <p className="auth-eyebrow">Customer dashboard</p>
       <h1 id="dashboard-title">Dashboard</h1>
-      <p className="mb-8 text-ink/70">Manage your work and respond to customer enquiries about your designs.</p>
-      <div role="tablist" aria-label="Designer dashboard" className="flex gap-2 overflow-x-auto border-b border-sage-200/60 pb-3">
+      <p className="mb-8 text-ink/70">
+        Revisit your favourite designs and keep track of your design enquiries.
+      </p>
+      <div role="tablist" aria-label="Customer dashboard" className="flex gap-2 overflow-x-auto border-b border-sage-200/60 pb-3">
         {tabs.map(({ id, label, icon: Icon }, index) => (
           <button
             key={id}
-            id={`designer-tab-${id}`}
+            id={`customer-tab-${id}`}
             type="button"
             role="tab"
             aria-selected={activeTab === id}
-            aria-controls={`designer-panel-${id}`}
+            aria-controls={`customer-panel-${id}`}
             tabIndex={activeTab === id ? 0 : -1}
             onClick={() => selectDashboardTab(id)}
             onKeyDown={(event) => navigateDashboardTabs(event, index)}
@@ -69,33 +66,21 @@ function DesignerDashboardPage() {
       {tabs.map(({ id }) => (
         <div
           key={id}
-          id={`designer-panel-${id}`}
+          id={`customer-panel-${id}`}
           role="tabpanel"
-          aria-labelledby={`designer-tab-${id}`}
+          aria-labelledby={`customer-tab-${id}`}
           hidden={activeTab !== id}
           tabIndex={0}
           className="pt-6"
         >
-          {id === "designs" && (
-            <>
-              <DesignerDesignTable active={activeTab === "designs"} />
-              <div className="mt-6 grid gap-5 sm:grid-cols-2">
-                {designSections.map(({ title, description, icon: Icon }) => (
-                  <div key={title} className="rounded-2xl border border-sage-200/60 p-5">
-                    <Icon size={24} className="mb-4 text-sage-700" aria-hidden="true" />
-                    <h2 className="text-lg font-semibold text-ink">{title}</h2>
-                    <p className="mt-2 text-sm text-ink/70">{description}</p>
-                    <p className="mt-4 text-xs font-semibold text-sage-700">Coming soon</p>
-                  </div>
-                ))}
-              </div>
-            </>
+          {id === "favourites" && activeTab === "favourites" && <CustomerFavouriteDesigns />}
+          {id === "enquiries" && (
+            <EnquiryList active={activeTab === "enquiries"} />
           )}
-          {id === "enquiries" && <EnquiryList active={activeTab === "enquiries"} />}
         </div>
       ))}
     </section>
   );
 }
 
-export default DesignerDashboardPage;
+export default CustomerDashboardPage;

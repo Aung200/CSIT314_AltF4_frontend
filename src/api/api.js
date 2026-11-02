@@ -7,6 +7,7 @@ import EnquiryAPI from "./enquiryApi";
 import CategoryAPI from "./categoryApi";
 import DesignAPI from "./designApi";
 import CompanyAPI from "./companyApi";
+import FavouriteAPI from "./favouriteApi";
 
 const API = {
   ...AuthAPI,
@@ -17,6 +18,7 @@ const API = {
   ...CategoryAPI,
   ...DesignAPI,
   ...CompanyAPI,
+  ...FavouriteAPI,
 };
 
 export default API;

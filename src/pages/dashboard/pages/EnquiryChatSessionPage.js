@@ -5,7 +5,7 @@ import { Link, useParams } from "react-router-dom";
 //components
 import { ArrowLeft, CheckCircle2, MessageCircle, Send } from "lucide-react";
 import { ToastContainer, toast } from "react-toastify";
-import EnquiryStatusBadge from "../components/EnquiryStatusBadge";
+import EnquiryStatusBadge from "../components/shared/EnquiryStatusBadge";
 
 //api
 import API from "../../../api/api";

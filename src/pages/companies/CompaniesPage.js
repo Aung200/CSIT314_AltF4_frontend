@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 
 //components
 import { Building2, LoaderCircle, RotateCcw, Search } from "lucide-react";
-import Pagination from "../dashboard/components/Pagination";
-import CompanyCard from "./components/CompanyCard";
+import Pagination from "../dashboard/components/shared/Pagination";
+import CompanyCard from "./components/directory/CompanyCard";
 
 //api
 import API from "../../api/api";

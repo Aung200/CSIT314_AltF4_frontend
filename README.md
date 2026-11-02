@@ -20,6 +20,21 @@
 - As a visitor or customer, I want to view a design's details and photos so that I can understand the project before making an enquiry. (Design Details)
 - As a visitor or customer, I want to see related designs in the same category so that I can explore similar ideas. (Related Designs)
 
+- As a designer, I want views to be recorded when guests or logged-in customers open my design details so that interest in my work can be tracked. (Design View Tracking)
+
+### Design Statistics
+
+- As Platform Management, I want to see view totals, daily trends, and the top five designs so that I can understand activity across the platform. (Platform Design Statistics)
+- As a company, I want to see view statistics for my company's designs so that I can identify popular work. (Company Design Statistics)
+- As a designer, I want to see view statistics for my own designs so that I can track interest in my portfolio. (Designer Design Statistics)
+- As a dashboard user, I want to choose a reporting period so that I can compare recent and all-time design popularity. (Statistics Period Selection)
+
+### Favourite Designs
+
+- As a logged-in customer, I want to view my saved designs in the dashboard so that I can revisit their details. (Favourite Design Listing)
+
+- As a logged-in customer, I want to add a design to my favourites from its card so that I can save ideas I like. (Add Favourite Design)
+
 ### Company Directory
 
 - As a visitor or customer, I want to browse approved companies with images and contact details so that I can find professionals for my project. (Company Browsing)
@@ -27,10 +42,14 @@
 - As a visitor or customer, I want to browse companies across pages so that I can explore the directory at my own pace. (Company Pagination)
 - As a visitor or customer, I want to visit a company's website or contact it by email or phone so that I can learn more about its services. (Company Contact Details)
 
-### Company Designer Registration
+### Company Designer Management
 
 - As a company, I want to register a designer using their email, first name, and last name so that they can join my company. (Designer Registration)
 - As a company, I want to see the server's registration confirmation or error message so that I know whether the designer account was created successfully. (Registration Feedback)
+
+### Designer Profile
+
+- As a designer, I want to update my years of experience and biography so that customers can learn about my background and design approach. (Designer Profile Update)
 
 ### Designer Portfolio Management
 
@@ -74,7 +93,6 @@
 
 ## Features Not Yet Implemented
 
-- Company designer listing/management.
-- Dynamic company designer selection (design management currently uses one temporary designer option).
-- Customer favourite designs.
-- Designer view statistics and like notifications.
+- Company designer listing.
+- Dynamic company designer selection (design creation currently uses one temporary designer option).
+- Company management of designer accounts (editing and removal).

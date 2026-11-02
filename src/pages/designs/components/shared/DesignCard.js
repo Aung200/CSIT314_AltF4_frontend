@@ -4,8 +4,9 @@ import { Link } from "react-router-dom";
 
 //components
 import { ArrowUpRight, ImageOff, MapPin } from "lucide-react";
+import FavouriteDesignButton from "./FavouriteDesignButton";
 
-function DesignCard({ design, categoryName }) {
+function DesignCard({ design, categoryName, isFavourite = false }) {
   const detailsPath = `/designs/${encodeURIComponent(design.id)}`;
   const imageUrl = design.images?.[0]?.url;
   const [imageFailed, setImageFailed] = useState(false);
@@ -16,16 +17,19 @@ function DesignCard({ design, categoryName }) {
 
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-sage-200/60 bg-white transition-shadow hover:shadow-md">
-      <Link to={detailsPath} aria-label={`View ${design.title}`} className="relative block aspect-[4/3] w-full overflow-hidden bg-sage-50">
-        {imageUrl && !imageFailed ? (
-          <img src={imageUrl} alt="" loading="lazy" onError={() => setImageFailed(true)} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
-        ) : (
-          <span className="flex h-full flex-col items-center justify-center gap-3 text-sage-700">
-            <ImageOff size={32} strokeWidth={1.5} aria-hidden="true" />
-            <span className="text-sm">No photo available</span>
-          </span>
-        )}
-      </Link>
+      <div className="relative">
+        <Link to={detailsPath} aria-label={`View ${design.title}`} className="relative block aspect-[4/3] w-full overflow-hidden bg-sage-50">
+          {imageUrl && !imageFailed ? (
+            <img src={imageUrl} alt="" loading="lazy" onError={() => setImageFailed(true)} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
+          ) : (
+            <span className="flex h-full flex-col items-center justify-center gap-3 text-sage-700">
+              <ImageOff size={32} strokeWidth={1.5} aria-hidden="true" />
+              <span className="text-sm">No photo available</span>
+            </span>
+          )}
+        </Link>
+        <FavouriteDesignButton designId={design.id} title={design.title} isFavourite={isFavourite} />
+      </div>
       <div className="flex flex-1 flex-col p-5">
         <div className="mb-5">
           <div className="mb-3 flex flex-wrap gap-2 text-xs font-semibold text-sage-700">

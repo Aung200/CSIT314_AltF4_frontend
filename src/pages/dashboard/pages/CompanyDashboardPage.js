@@ -1,27 +1,68 @@
 //libraries
+import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 
 //components
-import { Images, Plus, Users } from "lucide-react";
+import { Images, LayoutDashboard, Plus, Users } from "lucide-react";
 import { ToastContainer } from "react-toastify";
-import DesignerDesignTableContent from "../components/DesignerDesignTableContent";
+import DesignStatistics from "../components/shared/DesignStatistics";
+import DesignerDesignTableContent from "../components/shared/DesignerDesignTableContent";
 
 //context
 import { useAuth } from "../../../context/AuthContext";
 
-// Temporary option until the company designer listing API is available.
+//api
+import API from "../../../api/api";
+
+//utils
+import getDesignError from "../../../utils/getDesignError";
+
+// Temporary designer option until company designer selection is available.
 const companyDesigners = [
   { id: "dce92d28-2868-42de-ad86-7025ac745641", email: "designernew@gmail.com" },
 ];
 
 const tabs = [
+  { id: "overview", label: "Dashboard", icon: LayoutDashboard },
   { id: "designs", label: "Designs", icon: Images },
   { id: "designers", label: "Designers", icon: Users },
 ];
 
 function CompanyDashboardPage() {
+  const { isLoggedIn, role, profile } = useAuth();
+  const accountId = isLoggedIn && role === 2 ? profile?.id : null;
+  const [resolvedCompany, setResolvedCompany] = useState(null);
+  const resolvedCompanyId = resolvedCompany?.accountId === accountId ? resolvedCompany.id : null;
+  const [companyLoading, setCompanyLoading] = useState(true);
+  const [companyError, setCompanyError] = useState("");
+  const [companyRetry, setCompanyRetry] = useState(0);
+
+  useEffect(() => {
+    if (!accountId) return;
+    let active = true;
+    const loadCompany = async () => {
+      setCompanyLoading(true);
+      setCompanyError("");
+      try {
+        // The company designs endpoint currently needs the company record ID.
+        const companyResponse = await API.getCompanyDetailsAPI(accountId);
+        if (!active) return;
+        const company = companyResponse.data?.company ?? companyResponse.data;
+        if (!company?.id) throw new Error("Unable to identify your company.");
+        setResolvedCompany({ accountId, id: company.id });
+      } catch (error) {
+        if (active) setCompanyError(getDesignError(error, "Unable to load company details. Please try again."));
+      } finally {
+        if (active) setCompanyLoading(false);
+      }
+    };
+    loadCompany();
+    return () => { active = false; };
+  }, [accountId, companyRetry]);
+
   const [searchParams, setSearchParams] = useSearchParams();
-  const activeTab = searchParams.get("tab") === "designers" ? "designers" : "designs";
+  const selectedTab = searchParams.get("tab");
+  const activeTab = tabs.some((tab) => tab.id === selectedTab) ? selectedTab : "overview";
 
   const selectTab = (id) => {
     setSearchParams((params) => {
@@ -41,7 +82,6 @@ function CompanyDashboardPage() {
     document.getElementById(`company-tab-${tabs[nextIndex].id}`)?.focus();
     selectTab(tabs[nextIndex].id);
   };
-  const { isLoggedIn, role, profile } = useAuth();
   if (!isLoggedIn || role !== 2 || !profile?.id) return null;
   return (
     <section className="auth-card w-full max-w-none" aria-labelledby="dashboard-title">
@@ -58,8 +98,13 @@ function CompanyDashboardPage() {
           </button>
         ))}
       </div>
+      <div id="company-panel-overview" role="tabpanel" aria-labelledby="company-tab-overview" hidden={activeTab !== "overview"} tabIndex={0} className="pt-6">
+        {!resolvedCompanyId && (companyLoading ? <p role="status">Loading company details...</p> : <div role="alert"><p>{companyError || "Unable to load company details."}</p><button type="button" onClick={() => setCompanyRetry((value) => value + 1)} className="mt-3 font-semibold text-sage-700 underline">Try again</button></div>)}
+        {activeTab === "overview" && resolvedCompanyId && <DesignStatistics key={resolvedCompanyId} companyId={resolvedCompanyId} />}
+      </div>
       <div id="company-panel-designs" role="tabpanel" aria-labelledby="company-tab-designs" hidden={activeTab !== "designs"} tabIndex={0} className="pt-6">
-        {activeTab === "designs" && <DesignerDesignTableContent key={profile.id} designerId={companyDesigners[0].id} designers={companyDesigners} company />}
+        {!resolvedCompanyId && (companyLoading ? <p role="status">Loading company details...</p> : <div role="alert"><p>{companyError || "Unable to load company details."}</p><button type="button" onClick={() => setCompanyRetry((value) => value + 1)} className="mt-3 font-semibold text-sage-700 underline">Try again</button></div>)}
+        {activeTab === "designs" && resolvedCompanyId && <DesignerDesignTableContent key={resolvedCompanyId} companyId={resolvedCompanyId} designers={companyDesigners} company />}
       </div>
       <div id="company-panel-designers" role="tabpanel" aria-labelledby="company-tab-designers" hidden={activeTab !== "designers"} tabIndex={0} className="pt-6">
         <div className="flex flex-wrap items-start justify-between gap-4">
@@ -70,7 +115,7 @@ function CompanyDashboardPage() {
         </div>
         <div className="mt-6 rounded-2xl border border-sage-200/60 p-8 text-center">
           <Users size={32} className="mx-auto mb-4 text-sage-700" aria-hidden="true" />
-          <p className="text-ink/70">Designer listing and management are not available yet. Use Add designer to register a designer account.</p>
+          <p className="text-ink/70">Designer listing is not available yet. Use Add designer to register a designer account.</p>
         </div>
       </div>
     </section>

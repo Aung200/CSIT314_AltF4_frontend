@@ -2,7 +2,7 @@
 import { useParams } from "react-router-dom";
 
 //components
-import DesignDetails from "./components/DesignDetails";
+import DesignDetails from "../components/details/DesignDetails";
 
 function DesignDetailsPage() {
   const { designId } = useParams();

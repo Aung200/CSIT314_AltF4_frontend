@@ -9,17 +9,17 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "../../../components/ui/dropdown-menu";
+} from "../../../../components/ui/dropdown-menu";
 
 //api
-import API from "../../../api/api";
+import API from "../../../../api/api";
 
 //context
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../../../context/AuthContext";
 
 //utils
-import getCategoryError from "../../../utils/getCategoryError";
-import formatCategoryDate from "../../../utils/formatCategoryDate";
+import getCategoryError from "../../../../utils/getCategoryError";
+import formatCategoryDate from "../../../../utils/formatCategoryDate";
 
 function CategoryTable({ active = true }) {
   const { isLoggedIn, role } = useAuth();

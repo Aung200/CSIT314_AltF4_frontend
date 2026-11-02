@@ -6,9 +6,9 @@ import { useAuth } from "../../context/AuthContext";
 
 //pages
 import PageNotFoundPage from "../error/PageNotFoundPage";
-import LoginPage from "./sub/LoginPage";
-import RegisterPage from "./sub/RegisterPage";
-import CompanyRegisterPage from "./sub/CompanyRegisterPage";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import CompanyRegisterPage from "./pages/CompanyRegisterPage";
 
 function AuthPage() {
   const { isLoggedIn, setLogin } = useAuth();

@@ -4,13 +4,14 @@ import { toast } from "react-toastify";
 
 //components
 import { X } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../../../components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../../../../components/ui/dialog";
 
 //api
-import API from "../../../api/api";
+import API from "../../../../api/api";
 
 //utils
-import getDesignError from "../../../utils/getDesignError";
+import getDesignError from "../../../../utils/getDesignError";
+import formatDesignerLabel from "../../../../utils/formatDesignerLabel";
 
 const emptyDesign = {
   title: "", description: "", location: "", property_type: "HDB",
@@ -121,6 +122,10 @@ function DesignFormDialog({ designId, designerId, designers, onClose, onSaved })
   const saveDesign = async (event) => {
     event.preventDefault();
     if (savingRef.current || loading || loadFailed) return;
+    if (designers && !designers.some(({ id }) => id === selectedDesignerId)) {
+      toast.error("Please select an available designer.", { autoClose: 5000 });
+      return;
+    }
     if (!selectedDesignerId || !design.title.trim() || !design.description.trim() || !design.location.trim() || !design.category_id || !design.completion_date) {
       toast.error("Please complete all the design details.", { autoClose: 5000 });
       return;
@@ -142,7 +147,7 @@ function DesignFormDialog({ designId, designerId, designers, onClose, onSaved })
     try {
       if (editing) await API.update_design(designId, payload, images, removedImageIds);
       else await API.create_design(payload, images);
-      if (mountedRef.current) onSaved(editing ? "Design updated successfully." : "Design created successfully.");
+      if (mountedRef.current) onSaved(editing ? "Design updated successfully." : "Design created successfully.", selectedDesignerId);
     } catch (error) {
       if (mountedRef.current) toast.error(getDesignError(error, "Unable to save this design. Please try again."), { autoClose: 5000 });
     } finally {
@@ -167,8 +172,9 @@ function DesignFormDialog({ designId, designerId, designers, onClose, onSaved })
                 <label htmlFor="design-designer" className="auth-label">Designer</label>
                 <select id="design-designer" value={selectedDesignerId} onChange={(event) => setSelectedDesignerId(event.target.value)} required disabled={editing} className="auth-input">
                   <option value="">Select a designer</option>
-                  {designers.map((designer) => <option key={designer.id} value={designer.id}>{designer.email}</option>)}
+                  {designers.map((designer) => <option key={designer.id} value={designer.id}>{formatDesignerLabel(designer)}</option>)}
                 </select>
+                {!designers.length && <p className="mt-2 text-sm text-ink/70">No designers are available.</p>}
               </div>}
               <div className="sm:col-span-2">
                 <label htmlFor="design-title" className="auth-label">Design title</label>
@@ -235,7 +241,7 @@ function DesignFormDialog({ designId, designerId, designers, onClose, onSaved })
               </div>
               <div className="flex justify-end gap-3 sm:col-span-2">
                 <button type="button" onClick={() => closeDesignForm(false)} className="rounded-full border border-sage-200 px-5 py-2.5 font-semibold text-sage-700">Cancel</button>
-                <button type="submit" disabled={saving || !categories.length} className="rounded-full bg-sage-700 px-5 py-2.5 font-semibold text-white hover:bg-ink disabled:opacity-50">{saving ? "Saving..." : editing ? "Save changes" : "Create design"}</button>
+                <button type="submit" disabled={saving || !categories.length || (designers && !designers.length)} className="rounded-full bg-sage-700 px-5 py-2.5 font-semibold text-white hover:bg-ink disabled:opacity-50">{saving ? "Saving..." : editing ? "Save changes" : "Create design"}</button>
               </div>
             </fieldset>
           </form>

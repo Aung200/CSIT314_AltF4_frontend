@@ -13,7 +13,7 @@ const DashboardPage = lazy(() => import("./pages/dashboard/DashboardPage"));
 const HomePage = lazy(() => import("./pages/home/HomePage"));
 const CompaniesPage = lazy(() => import("./pages/companies/CompaniesPage"));
 const DesignsPage = lazy(() => import("./pages/designs/DesignsPage"));
-const DesignDetailsPage = lazy(() => import("./pages/designs/DesignDetailsPage"));
+const DesignDetailsPage = lazy(() => import("./pages/designs/pages/DesignDetailsPage"));
 const PageNotFoundPage = lazy(() => import("./pages/error/PageNotFoundPage"));
 
 const AboutPage = lazy(() => import("./pages/about/AboutPage"));

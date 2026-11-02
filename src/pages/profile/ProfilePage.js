@@ -2,8 +2,8 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
 //pages
-import ProfileDetailsPage from "./sub/ProfileDetailsPage";
-import CompanyProfileDetailsPage from "./sub/CompanyProfileDetailsPage";
+import ProfileDetailsPage from "./pages/ProfileDetailsPage";
+import CompanyProfileDetailsPage from "./pages/CompanyProfileDetailsPage";
 
 function ProfilePage() {
   let role;

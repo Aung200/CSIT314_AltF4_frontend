@@ -1,8 +1,8 @@
 //components
-import DesignerDesignTableContent from "./DesignerDesignTableContent";
+import DesignerDesignTableContent from "../shared/DesignerDesignTableContent";
 
 //context
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../../../context/AuthContext";
 
 function DesignerDesignTable({ active = true }) {
   const { isLoggedIn, role, profile } = useAuth();

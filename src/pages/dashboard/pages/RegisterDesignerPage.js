@@ -2,7 +2,7 @@
 import { Link, Navigate } from "react-router-dom";
 
 //components
-import CompanyDesignerRegistration from "../components/CompanyDesignerRegistration";
+import CompanyDesignerRegistration from "../components/company/CompanyDesignerRegistration";
 
 //context
 import { useAuth } from "../../../context/AuthContext";

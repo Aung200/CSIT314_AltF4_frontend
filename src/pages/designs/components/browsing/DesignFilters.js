@@ -1,8 +1,8 @@
 //components
-import { Slider } from "../../../components/ui/slider";
+import { Slider } from "../../../../components/ui/slider";
 
 //utils
-import formatBudget from "../../../utils/formatBudget";
+import formatBudget from "../../../../utils/formatBudget";
 
 export const maximumBudget = 1000000;
 

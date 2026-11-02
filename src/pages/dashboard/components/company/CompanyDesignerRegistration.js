@@ -7,10 +7,10 @@ import { ArrowLeft } from "lucide-react";
 import { ToastContainer, toast } from "react-toastify";
 
 //api
-import API from "../../../api/api";
+import API from "../../../../api/api";
 
 //utils
-import getDesignerRegistrationMessage from "../../../utils/getDesignerRegistrationMessage";
+import getDesignerRegistrationMessage from "../../../../utils/getDesignerRegistrationMessage";
 
 function CompanyDesignerRegistration({ companyId }) {
   const [registering, setRegistering] = useState(false);
