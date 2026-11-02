@@ -11,8 +11,22 @@ function get_designer_designs(designer_id, page = 1, page_size = 10, filters = {
   });
 }
 
+function get_company_designs(company_id, page = 1, page_size = 10, filters = {}) {
+  return client.get(`/interior-designs/company/${company_id}`, {
+    params: { page, page_size, ...filters },
+  });
+}
+
 function get_design(design_id) {
   return client.get(`/interior-designs/${design_id}`);
+}
+
+function get_design_views() {
+  return client.get("/views");
+}
+
+function create_design_view(design_id) {
+  return client.post("/views", { design_id });
 }
 
 function create_design(design, images) {
@@ -37,7 +51,10 @@ function delete_design(design_id) {
 const DesignAPI = {
   get_interior_designs,
   get_designer_designs,
+  get_company_designs,
   get_design,
+  create_design_view,
+  get_design_views,
   create_design,
   update_design,
   delete_design,

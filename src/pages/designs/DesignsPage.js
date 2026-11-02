@@ -5,10 +5,10 @@ import { useSearchParams } from "react-router-dom";
 //components
 import { ToastContainer, toast } from "react-toastify";
 import { ChevronDown, Images, LoaderCircle, Search } from "lucide-react";
-import DesignFilters, { maximumBudget } from "./components/DesignFilters";
+import DesignFilters, { maximumBudget } from "./components/browsing/DesignFilters";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from "../../components/ui/dropdown-menu";
-import DesignCard from "./components/DesignCard";
-import Pagination from "../dashboard/components/Pagination";
+import DesignCard from "./components/shared/DesignCard";
+import Pagination from "../dashboard/components/shared/Pagination";
 
 //api
 import API from "../../api/api";

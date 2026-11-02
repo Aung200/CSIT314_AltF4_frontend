@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 //components
 import { toast } from "react-toastify";
 import { Check, Clock, MoreHorizontal, X } from "lucide-react";
-import Pagination from "./Pagination";
+import Pagination from "../shared/Pagination";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,13 +12,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../../../components/ui/dropdown-menu";
+} from "../../../../components/ui/dropdown-menu";
 
 //api
-import API from "../../../api/api";
+import API from "../../../../api/api";
 
 //utils
-import normalizeStatus from "../../../utils/normalizeStatus";
+import normalizeStatus from "../../../../utils/normalizeStatus";
 
 function CompanyTable({ active = true }) {
   const [companies, setCompanies] = useState(null);

@@ -35,11 +35,16 @@ function updateCompanyProfileAPI(
   });
 }
 
+function updateDesignerProfileAPI(user_id, YoE, biography) {
+  return client.patch(`/designers/${user_id}`, { YoE, biography });
+}
+
 const ProfileAPI = {
   getUserDetailsAPI,
   updateUserProfileAPI,
   getCompanyDetailsAPI,
   updateCompanyProfileAPI,
+  updateDesignerProfileAPI,
 };
 
 export default ProfileAPI;

@@ -2,14 +2,14 @@
 import { useEffect, useState } from "react";
 
 //components
-import Pagination from "./Pagination";
+import Pagination from "../shared/Pagination";
 import { toast } from "react-toastify";
 
 //api
-import API from "../../../api/api";
+import API from "../../../../api/api";
 
 //utils
-import formatCreatedAt from "../../../utils/formatCreatedAt";
+import formatCreatedAt from "../../../../utils/formatCreatedAt";
 
 function CustomerTable({ active = true }) {
   const [customers, setCustomers] = useState(null);

@@ -8,13 +8,13 @@ import { toast } from "react-toastify";
 import EnquiryStatusBadge from "./EnquiryStatusBadge";
 
 //api
-import API from "../../../api/api";
+import API from "../../../../api/api";
 
 //context
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../../../context/AuthContext";
 
 //utils
-import sortEnquiries from "../../../utils/sortEnquiries";
+import sortEnquiries from "../../../../utils/sortEnquiries";
 
 function EnquiryList({ active = true }) {
   const { isLoggedIn, profile, role } = useAuth();

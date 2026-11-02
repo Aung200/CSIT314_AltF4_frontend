@@ -15,7 +15,7 @@ function Navbar() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
   const toggle = useRef(null);
-  const { isLoggedIn, profile, logout } = useAuth();
+  const { isLoggedIn, profile, role, logout } = useAuth();
 
   useEffect(() => {
     setOpen(false);
@@ -45,7 +45,7 @@ function Navbar() {
           <Link to="/" aria-label="Houzz home" onClick={() => setOpen(false)} className="shrink-0 rounded-md">
             <img src={`${process.env.PUBLIC_URL}/houzzlogo.png`} alt="Houzz" width="2132" height="738" className="h-auto w-32 sm:w-36 lg:w-40" />
           </Link>
-          <div className="hidden items-center gap-5 md:flex lg:gap-10">
+          <div className="hidden items-center gap-5 lg:flex">
             <NavLink to="/designs" className={getNavigationLinkClassName}>
               Interior Designs
             </NavLink>
@@ -57,19 +57,19 @@ function Navbar() {
             </NavLink>
           </div>
           {isLoggedIn ? (
-            <div className="hidden md:block"><ProfileActions profileInitial={profileInitial} onNavigate={() => setOpen(false)} onLogout={logoutUser} /></div>
+            <div className="hidden lg:block"><ProfileActions role={role} profileInitial={profileInitial} onNavigate={() => setOpen(false)} onLogout={logoutUser} /></div>
           ) : (
-            <NavLink to="/auth/login" className="hidden items-center gap-3 rounded-full bg-sage-700 px-5 py-2.5 text-base font-semibold text-white transition-colors hover:bg-ink md:inline-flex">
+            <NavLink to="/auth/login" className="hidden items-center gap-3 rounded-full bg-sage-700 px-5 py-2.5 text-base font-semibold text-white transition-colors hover:bg-ink lg:inline-flex">
               Login / Sign up
             </NavLink>
           )}
-          <button ref={toggle} type="button" onClick={() => setOpen(!open)} aria-expanded={open} aria-controls="mobile-navigation" aria-label={open ? "Close menu" : "Open menu"} className="flex h-11 w-11 items-center justify-center rounded-xl border border-sage-200 bg-sage-50 text-sage-700 md:hidden">
+          <button ref={toggle} type="button" onClick={() => setOpen(!open)} aria-expanded={open} aria-controls="mobile-navigation" aria-label={open ? "Close menu" : "Open menu"} className="flex h-11 w-11 items-center justify-center rounded-xl border border-sage-200 bg-sage-50 text-sage-700 lg:hidden">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" className="h-6 w-6" aria-hidden="true">
               {open ? <path d="m6 6 12 12M6 18 18 6" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
             </svg>
           </button>
         </div>
-        <div id="mobile-navigation" hidden={!open} className="border-t border-sage-200/60 pb-6 pt-3 md:hidden">
+        <div id="mobile-navigation" hidden={!open} className="border-t border-sage-200/60 pb-6 pt-3 lg:hidden">
           <div className="flex flex-col gap-1">
             <NavLink to="/designs" onClick={() => setOpen(false)} className={getNavigationLinkClassName}>
               Interior Designs
@@ -81,7 +81,7 @@ function Navbar() {
               Contact Us
             </NavLink>
             {isLoggedIn ? (
-              <ProfileActions mobile profileInitial={profileInitial} onNavigate={() => setOpen(false)} onLogout={logoutUser} />
+              <ProfileActions mobile role={role} profileInitial={profileInitial} onNavigate={() => setOpen(false)} onLogout={logoutUser} />
             ) : (
               <NavLink to="/auth/login" onClick={() => setOpen(false)} className="mt-3 flex items-center justify-between rounded-xl bg-sage-700 px-5 py-4 text-base font-semibold text-white hover:bg-ink">
                 Login / Sign up

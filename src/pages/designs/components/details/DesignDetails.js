@@ -1,5 +1,5 @@
 //libraries
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 //components
@@ -10,12 +10,17 @@ import DesignEnquiryForm from "./DesignEnquiryForm";
 import RelatedDesigns from "./RelatedDesigns";
 
 //api
-import API from "../../../api/api";
+import API from "../../../../api/api";
+
+//context
+import { useAuth } from "../../../../context/AuthContext";
 
 //utils
-import formatDesignDate from "../../../utils/formatDesignDate";
+import formatDesignDate from "../../../../utils/formatDesignDate";
 
 function DesignDetails({ designId }) {
+  const { isLoggedIn, role } = useAuth();
+  const viewedDesignRef = useRef(null);
   const [design, setDesign] = useState(null);
   const [categoryName, setCategoryName] = useState("Not available");
   const [loading, setLoading] = useState(true);
@@ -57,6 +62,15 @@ function DesignDetails({ designId }) {
     loadDesignDetails();
     return () => { active = false; };
   }, [designId, retry]);
+
+  useEffect(() => {
+    if ((isLoggedIn && role !== 4) || !design?.id || viewedDesignRef.current === design.id) return;
+    // Count one successful guest or customer detail-page visit.
+    viewedDesignRef.current = design.id;
+    API.create_design_view(design.id).catch(() => {
+      console.warn("Unable to record design view.");
+    });
+  }, [design, isLoggedIn, role]);
 
   const details = design ? [
     ["Property type", design.property_type || "Not provided"],

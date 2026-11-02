@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 //components
+import DesignerProfileDetails from "../components/designer/DesignerProfileDetails";
 import { Pencil, Save, X } from "lucide-react";
 import { ToastContainer, toast } from "react-toastify";
 
@@ -13,7 +14,7 @@ import API from "../../../api/api";
 import { useAuth } from "../../../context/AuthContext";
 
 function ProfileDetailsPage() {
-  const { isLoggedIn, profile } = useAuth();
+  const { isLoggedIn, profile, role } = useAuth();
   const [editing, setEditing] = useState(false);
   const [details, setDetails] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -338,6 +339,8 @@ function ProfileDetailsPage() {
           )}
         </form>
       )}
+
+      {!loading && !error && role === 3 && <DesignerProfileDetails key={id} initialDetails={profileDetails} />}
 
       <section
         aria-labelledby="password-title"

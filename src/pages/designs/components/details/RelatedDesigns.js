@@ -2,10 +2,10 @@
 import { useEffect, useState } from "react";
 
 //components
-import DesignCard from "./DesignCard";
+import DesignCard from "../shared/DesignCard";
 
 //api
-import API from "../../../api/api";
+import API from "../../../../api/api";
 
 function RelatedDesigns({ designId, categoryId, categoryName }) {
   const [designs, setDesigns] = useState([]);

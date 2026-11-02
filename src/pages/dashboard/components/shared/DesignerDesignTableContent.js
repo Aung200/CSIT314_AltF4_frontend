@@ -5,24 +5,24 @@ import { toast } from "react-toastify";
 
 //components
 import { CheckCircle2, Clock3, ChevronDown, ChevronUp, Eye, Filter, RotateCcw, MoreHorizontal, Pencil, Plus, Search, Trash2 } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../../components/ui/dropdown-menu";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../../../components/ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../../../components/ui/dropdown-menu";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../../../../components/ui/dialog";
 import DesignFormDialog from "./DesignFormDialog";
 import DesignStatusBadge from "./DesignStatusBadge";
 import Pagination from "./Pagination";
 
 //api
-import API from "../../../api/api";
+import API from "../../../../api/api";
 
 //utils
-import formatDesignDate from "../../../utils/formatDesignDate";
-import getDesignError from "../../../utils/getDesignError";
+import formatDesignDate from "../../../../utils/formatDesignDate";
+import getDesignError from "../../../../utils/getDesignError";
 
 const defaultDesignFilters = {
   title: "", property_type: "", category_type: "",
 };
 
-function DesignerDesignTableContent({ designerId, designers, company = false }) {
+function DesignerDesignTableContent({ designerId, companyId, designers, company = false }) {
   const [designs, setDesigns] = useState([]);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -52,7 +52,9 @@ function DesignerDesignTableContent({ designerId, designers, company = false }) 
       setLoading(true);
       setListFailed(false);
       try {
-        const response = await API.get_designer_designs(designerId, page, pageSize, filters);
+        const response = company
+          ? await API.get_company_designs(companyId, page, pageSize, filters)
+          : await API.get_designer_designs(designerId, page, pageSize, filters);
         if (!active) return;
         const { items, pagination } = response.data;
         if (!Array.isArray(items) || !Number.isInteger(pagination?.total_items) || pagination.total_items < 0) throw new Error("Unexpected design response.");
@@ -72,7 +74,7 @@ function DesignerDesignTableContent({ designerId, designers, company = false }) 
     };
     loadDesignerDesigns();
     return () => { active = false; };
-  }, [designerId, page, pageSize, filters, reload]);
+  }, [designerId, companyId, company, page, pageSize, filters, reload]);
 
   useEffect(() => {
     let active = true;
@@ -190,10 +192,10 @@ function DesignerDesignTableContent({ designerId, designers, company = false }) 
     <section aria-label="Design management">
       <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h2 className="text-xl font-semibold text-ink">Your designs</h2>
-          <p className="mt-2 text-ink/70">Create and manage your interior design portfolio.</p>
+          <h2 className="text-xl font-semibold text-ink">{company ? "Company designs" : "Your designs"}</h2>
+          <p className="mt-2 text-ink/70">{company ? "Manage designs across your company and review their approval status." : "Create and manage your interior design portfolio."}</p>
         </div>
-        <button type="button" onClick={showCreateDesignForm} className="inline-flex items-center gap-2 rounded-full bg-sage-700 px-5 py-3 font-semibold text-white hover:bg-ink"><Plus size={18} aria-hidden="true" /> Add design</button>
+        <button type="button" onClick={showCreateDesignForm} className="inline-flex items-center gap-2 rounded-full bg-sage-700 px-5 py-3 font-semibold text-white hover:bg-ink disabled:cursor-not-allowed disabled:opacity-40"><Plus size={18} aria-hidden="true" /> Add design</button>
       </div>
       <form role="search" aria-label="Search and filter designs" onSubmit={applyDesignFilters} className="mb-6 grid items-end gap-4 rounded-2xl border border-sage-200/60 bg-sage-50 p-5 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_180px_180px_auto]">
         <div className="min-w-0 sm:col-span-2 lg:col-span-1">

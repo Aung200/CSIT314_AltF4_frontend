@@ -7,10 +7,10 @@ import { toast } from "react-toastify";
 import { MessageCircle, Send } from "lucide-react";
 
 //api
-import API from "../../../api/api";
+import API from "../../../../api/api";
 
 //context
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../../../context/AuthContext";
 
 function DesignEnquiryForm({ designId }) {
   const { isLoggedIn, profile, role } = useAuth();

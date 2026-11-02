@@ -2,18 +2,18 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
 //components
-import DashboardOverview from "./components/DashboardOverview";
+import DashboardOverview from "./components/shared/DashboardOverview";
 
 //context
 import { useAuth } from "../../context/AuthContext";
 
 //pages
-import CompanyDashboardPage from "./sub/CompanyDashboardPage";
-import RegisterDesignerPage from "./sub/RegisterDesignerPage";
-import CustomerDashboardPage from "./sub/CustomerDashboardPage";
-import DesignerDashboardPage from "./sub/DesignerDashboardPage";
-import PlatformDashboardPage from "./sub/PlatformDashboardPage";
-import EnquiryChatSessionPage from "./sub/EnquiryChatSessionPage";
+import CompanyDashboardPage from "./pages/CompanyDashboardPage";
+import RegisterDesignerPage from "./pages/RegisterDesignerPage";
+import CustomerDashboardPage from "./pages/CustomerDashboardPage";
+import DesignerDashboardPage from "./pages/DesignerDashboardPage";
+import PlatformDashboardPage from "./pages/PlatformDashboardPage";
+import EnquiryChatSessionPage from "./pages/EnquiryChatSessionPage";
 
 function DashboardPage() {
   const { isLoggedIn, role } = useAuth();
