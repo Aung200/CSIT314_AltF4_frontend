@@ -18,7 +18,7 @@ function RegisterDesignerPage() {
       <Link to="/auth/login" className="mt-4 inline-block font-semibold text-sage-700 underline">Go to login</Link>
     </section>
   );
-  return <CompanyDesignerRegistration key={profile.id} companyId={profile.id} />;
+  return <CompanyDesignerRegistration key={profile.id} companyUserId={profile.id} />;
 }
 
 export default RegisterDesignerPage;

@@ -22,7 +22,7 @@ const defaultDesignFilters = {
   title: "", property_type: "", category_type: "",
 };
 
-function DesignerDesignTableContent({ designerId, companyId, designers, company = false }) {
+function DesignerDesignTableContent({ designerId, companyUserId, designers, designersLoading, designersError, onRetryDesigners, company = false }) {
   const [designs, setDesigns] = useState([]);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -53,7 +53,7 @@ function DesignerDesignTableContent({ designerId, companyId, designers, company 
       setListFailed(false);
       try {
         const response = company
-          ? await API.get_company_designs(companyId, page, pageSize, filters)
+          ? await API.get_company_designs(companyUserId, page, pageSize, filters)
           : await API.get_designer_designs(designerId, page, pageSize, filters);
         if (!active) return;
         const { items, pagination } = response.data;
@@ -74,7 +74,7 @@ function DesignerDesignTableContent({ designerId, companyId, designers, company 
     };
     loadDesignerDesigns();
     return () => { active = false; };
-  }, [designerId, companyId, company, page, pageSize, filters, reload]);
+  }, [designerId, companyUserId, company, page, pageSize, filters, reload]);
 
   useEffect(() => {
     let active = true;
@@ -167,14 +167,14 @@ function DesignerDesignTableContent({ designerId, companyId, designers, company 
   };
 
   const changeDesignStatus = async (design, status) => {
-    if (statusSavingRef.current || !company || !["Reviewing", "Approved"].includes(status)) return;
+    if (statusSavingRef.current || !company || !["Reviewing", "Approved"].includes(status) || (design.status || "Reviewing") === status) return;
     statusSavingRef.current = true;
     setUpdatingStatus(design.id);
     try {
-      await API.update_design(design.id, { status });
+      const response = await API.update_design_status(design.id, status);
       if (!mountedRef.current) return;
       setDesigns((current) => current.map((item) => item.id === design.id ? { ...item, status } : item));
-      toast.success("Design status updated successfully.", { autoClose: 5000 });
+      toast.success(response.data?.message || "Design status updated successfully.", { autoClose: 5000 });
     } catch (error) {
       if (mountedRef.current) toast.error(getDesignError(error, "Unable to update design status. Please try again."), { autoClose: 5000 });
     } finally {
@@ -283,7 +283,7 @@ function DesignerDesignTableContent({ designerId, companyId, designers, company 
         </table>
       </div>
       <Pagination page={page} pageSize={pageSize} totalItems={totalItems} onPageChange={setPage} onPageSizeChange={changeDesignPageSize} disabled={loading} />
-      {form && <DesignFormDialog designId={form.designId} designerId={designerId} designers={designers} onClose={() => setForm(null)} onSaved={finishDesignSave} />}
+      {form && <DesignFormDialog designId={form.designId} designerId={designerId} designers={designers} designersLoading={designersLoading} designersError={designersError} onRetryDesigners={onRetryDesigners} onClose={() => setForm(null)} onSaved={finishDesignSave} />}
       {deleteTarget && <Dialog open onOpenChange={closeDesignDeletion}>
         <DialogContent className="w-[calc(100%_-_2rem)] rounded-2xl border-sage-200 text-ink" showCloseButton={!deleting}>
           <DialogHeader>

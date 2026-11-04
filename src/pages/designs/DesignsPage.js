@@ -71,7 +71,7 @@ function DesignsPage() {
         if (page > lastPage) { setPage(lastPage); return; }
         setDesigns(items);
         const cover = items.find((design) => design.images?.[0]?.url)?.images[0].url;
-        if (cover) setHeroImage((current) => current || cover);
+        setHeroImage(cover || "");
       } catch (error) {
         if (active) {
           setListFailed(true);
