@@ -9,6 +9,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 //api
 import API from "../../../../api/api";
 
+//context
+import { useAuth } from "../../../../context/AuthContext";
+
 //utils
 import getDesignError from "../../../../utils/getDesignError";
 import formatDesignerLabel from "../../../../utils/formatDesignerLabel";
@@ -18,7 +21,9 @@ const emptyDesign = {
   budget: "", completion_date: "", category_id: "",
 };
 
-function DesignFormDialog({ designId, designerId, designers, onClose, onSaved }) {
+function DesignFormDialog({ designId, designerId, designers, designersLoading = false, designersError = "", onRetryDesigners, onClose, onSaved }) {
+  const { isLoggedIn, role, profile } = useAuth();
+  const submittingUserId = profile?.id;
   const [selectedDesignerId, setSelectedDesignerId] = useState(designerId || designers?.[0]?.id || "");
   const [design, setDesign] = useState(emptyDesign);
   const [categories, setCategories] = useState([]);
@@ -121,7 +126,11 @@ function DesignFormDialog({ designId, designerId, designers, onClose, onSaved })
 
   const saveDesign = async (event) => {
     event.preventDefault();
-    if (savingRef.current || loading || loadFailed) return;
+    if (savingRef.current || loading || loadFailed || designersLoading || designersError) return;
+    if (!isLoggedIn || ![2, 3].includes(role) || !submittingUserId) {
+      toast.error("Please sign in with a company or designer account to save a design.", { autoClose: 5000 });
+      return;
+    }
     if (designers && !designers.some(({ id }) => id === selectedDesignerId)) {
       toast.error("Please select an available designer.", { autoClose: 5000 });
       return;
@@ -146,7 +155,7 @@ function DesignFormDialog({ designId, designerId, designers, onClose, onSaved })
     };
     try {
       if (editing) await API.update_design(designId, payload, images, removedImageIds);
-      else await API.create_design(payload, images);
+      else await API.create_design(submittingUserId, payload, images);
       if (mountedRef.current) onSaved(editing ? "Design updated successfully." : "Design created successfully.", selectedDesignerId);
     } catch (error) {
       if (mountedRef.current) toast.error(getDesignError(error, "Unable to save this design. Please try again."), { autoClose: 5000 });
@@ -170,11 +179,13 @@ function DesignFormDialog({ designId, designerId, designers, onClose, onSaved })
             <fieldset disabled={saving} className="grid gap-5 sm:grid-cols-2">
               {designers && <div className="sm:col-span-2">
                 <label htmlFor="design-designer" className="auth-label">Designer</label>
-                <select id="design-designer" value={selectedDesignerId} onChange={(event) => setSelectedDesignerId(event.target.value)} required disabled={editing} className="auth-input">
+                <select id="design-designer" value={selectedDesignerId} onChange={(event) => setSelectedDesignerId(event.target.value)} required disabled={editing || designersLoading || Boolean(designersError)} className="auth-input">
                   <option value="">Select a designer</option>
                   {designers.map((designer) => <option key={designer.id} value={designer.id}>{formatDesignerLabel(designer)}</option>)}
                 </select>
-                {!designers.length && <p className="mt-2 text-sm text-ink/70">No designers are available.</p>}
+                {designersLoading ? <p role="status" className="mt-2 text-sm text-ink/70">Loading designers...</p> : designersError ? (
+                  <div role="alert" className="mt-2 text-sm text-ink/70"><p>{designersError}</p><button type="button" onClick={onRetryDesigners} className="mt-2 font-semibold text-sage-700 underline">Retry designers</button></div>
+                ) : !designers.length && <p className="mt-2 text-sm text-ink/70">No designers are available. Add a designer from the Designers tab before creating a design.</p>}
               </div>}
               <div className="sm:col-span-2">
                 <label htmlFor="design-title" className="auth-label">Design title</label>
@@ -241,7 +252,7 @@ function DesignFormDialog({ designId, designerId, designers, onClose, onSaved })
               </div>
               <div className="flex justify-end gap-3 sm:col-span-2">
                 <button type="button" onClick={() => closeDesignForm(false)} className="rounded-full border border-sage-200 px-5 py-2.5 font-semibold text-sage-700">Cancel</button>
-                <button type="submit" disabled={saving || !categories.length || (designers && !designers.length)} className="rounded-full bg-sage-700 px-5 py-2.5 font-semibold text-white hover:bg-ink disabled:opacity-50">{saving ? "Saving..." : editing ? "Save changes" : "Create design"}</button>
+                <button type="submit" disabled={saving || !categories.length || designersLoading || Boolean(designersError) || (designers && !designers.length)} className="rounded-full bg-sage-700 px-5 py-2.5 font-semibold text-white hover:bg-ink disabled:opacity-50">{saving ? "Saving..." : editing ? "Save changes" : "Create design"}</button>
               </div>
             </fieldset>
           </form>

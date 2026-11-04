@@ -12,7 +12,7 @@ import API from "../../../../api/api";
 //utils
 import getDesignerRegistrationMessage from "../../../../utils/getDesignerRegistrationMessage";
 
-function CompanyDesignerRegistration({ companyId }) {
+function CompanyDesignerRegistration({ companyUserId }) {
   const [registering, setRegistering] = useState(false);
   const requestRef = useRef(null);
 
@@ -38,7 +38,7 @@ function CompanyDesignerRegistration({ companyId }) {
     requestRef.current = request;
     setRegistering(true);
     try {
-      const response = await API.register_designer(companyId, email, firstName, lastName);
+      const response = await API.register_designer(companyUserId, email, firstName, lastName);
       if (request.cancelled) return;
       toast.success(getDesignerRegistrationMessage(response.data, "Designer registered successfully."), { autoClose: 5000 });
       form.reset();

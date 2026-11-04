@@ -6,6 +6,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { Images, LayoutDashboard, Plus, Users } from "lucide-react";
 import { ToastContainer } from "react-toastify";
 import DesignStatistics from "../components/shared/DesignStatistics";
+import CompanyDesignerTable from "../components/company/CompanyDesignerTable";
 import DesignerDesignTableContent from "../components/shared/DesignerDesignTableContent";
 
 //context
@@ -17,11 +18,6 @@ import API from "../../../api/api";
 //utils
 import getDesignError from "../../../utils/getDesignError";
 
-// Temporary designer option until company designer selection is available.
-const companyDesigners = [
-  { id: "dce92d28-2868-42de-ad86-7025ac745641", email: "designernew@gmail.com" },
-];
-
 const tabs = [
   { id: "overview", label: "Dashboard", icon: LayoutDashboard },
   { id: "designs", label: "Designs", icon: Images },
@@ -30,35 +26,50 @@ const tabs = [
 
 function CompanyDashboardPage() {
   const { isLoggedIn, role, profile } = useAuth();
-  const accountId = isLoggedIn && role === 2 ? profile?.id : null;
-  const [resolvedCompany, setResolvedCompany] = useState(null);
-  const resolvedCompanyId = resolvedCompany?.accountId === accountId ? resolvedCompany.id : null;
-  const [companyLoading, setCompanyLoading] = useState(true);
-  const [companyError, setCompanyError] = useState("");
-  const [companyRetry, setCompanyRetry] = useState(0);
+  const companyUserId = isLoggedIn && role === 2 ? profile?.id : null;
+  const [designerResult, setDesignerResult] = useState(null);
+  const [designerRetry, setDesignerRetry] = useState(0);
+  const currentDesignerResult = designerResult?.companyUserId === companyUserId ? designerResult : null;
+  const companyDesigners = currentDesignerResult?.items || [];
+  const designersLoading = !currentDesignerResult;
+  const designersError = currentDesignerResult?.error || "";
+  const designersWarning = currentDesignerResult?.warning || "";
 
   useEffect(() => {
-    if (!accountId) return;
+    if (!companyUserId) return;
     let active = true;
-    const loadCompany = async () => {
-      setCompanyLoading(true);
-      setCompanyError("");
+    const loadCompanyDesigners = async () => {
+      setDesignerResult(null);
       try {
-        // The company designs endpoint currently needs the company record ID.
-        const companyResponse = await API.getCompanyDetailsAPI(accountId);
+        const response = await API.get_company_designers(companyUserId);
         if (!active) return;
-        const company = companyResponse.data?.company ?? companyResponse.data;
-        if (!company?.id) throw new Error("Unable to identify your company.");
-        setResolvedCompany({ accountId, id: company.id });
+        const data = response.data;
+        const items = Array.isArray(data) ? data : data?.items;
+        if (!Array.isArray(items) || items.some((designer) => !(designer?.user_id || designer?.id))) throw new Error("Unexpected designer response.");
+        const designers = [...new Map(items.map(({ user_id, id, email, first_name, last_name, name }) => {
+          const designer = { id: user_id || id, email, first_name, last_name, name };
+          return [designer.id, designer];
+        })).values()];
+        const profiles = await Promise.allSettled(designers.map((designer) => API.getUserDetailsAPI(designer.id)));
+        if (!active) return;
+        let unavailableEmails = 0;
+        const designersWithEmails = designers.map((designer, index) => {
+          const result = profiles[index];
+          const user = result.status === "fulfilled" ? result.value.data?.user ?? result.value.data : null;
+          if (user?.id === designer.id && typeof user.email === "string" && user.email.trim()) {
+            return { ...designer, email: user.email.trim(), first_name: designer.first_name || user.first_name, last_name: designer.last_name || user.last_name };
+          }
+          if (!designer.email) unavailableEmails += 1;
+          return designer;
+        });
+        setDesignerResult({ companyUserId, items: designersWithEmails, warning: unavailableEmails ? "Some designer emails could not be loaded." : "" });
       } catch (error) {
-        if (active) setCompanyError(getDesignError(error, "Unable to load company details. Please try again."));
-      } finally {
-        if (active) setCompanyLoading(false);
+        if (active) setDesignerResult({ companyUserId, items: [], error: getDesignError(error, "Unable to load designers. Please try again.") });
       }
     };
-    loadCompany();
+    loadCompanyDesigners();
     return () => { active = false; };
-  }, [accountId, companyRetry]);
+  }, [companyUserId, designerRetry]);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedTab = searchParams.get("tab");
@@ -99,12 +110,10 @@ function CompanyDashboardPage() {
         ))}
       </div>
       <div id="company-panel-overview" role="tabpanel" aria-labelledby="company-tab-overview" hidden={activeTab !== "overview"} tabIndex={0} className="pt-6">
-        {!resolvedCompanyId && (companyLoading ? <p role="status">Loading company details...</p> : <div role="alert"><p>{companyError || "Unable to load company details."}</p><button type="button" onClick={() => setCompanyRetry((value) => value + 1)} className="mt-3 font-semibold text-sage-700 underline">Try again</button></div>)}
-        {activeTab === "overview" && resolvedCompanyId && <DesignStatistics key={resolvedCompanyId} companyId={resolvedCompanyId} />}
+        {activeTab === "overview" && <DesignStatistics key={companyUserId} />}
       </div>
       <div id="company-panel-designs" role="tabpanel" aria-labelledby="company-tab-designs" hidden={activeTab !== "designs"} tabIndex={0} className="pt-6">
-        {!resolvedCompanyId && (companyLoading ? <p role="status">Loading company details...</p> : <div role="alert"><p>{companyError || "Unable to load company details."}</p><button type="button" onClick={() => setCompanyRetry((value) => value + 1)} className="mt-3 font-semibold text-sage-700 underline">Try again</button></div>)}
-        {activeTab === "designs" && resolvedCompanyId && <DesignerDesignTableContent key={resolvedCompanyId} companyId={resolvedCompanyId} designers={companyDesigners} company />}
+        {activeTab === "designs" && <DesignerDesignTableContent key={companyUserId} companyUserId={companyUserId} designers={companyDesigners} designersLoading={designersLoading} designersError={designersError} onRetryDesigners={() => setDesignerRetry((value) => value + 1)} company />}
       </div>
       <div id="company-panel-designers" role="tabpanel" aria-labelledby="company-tab-designers" hidden={activeTab !== "designers"} tabIndex={0} className="pt-6">
         <div className="flex flex-wrap items-start justify-between gap-4">
@@ -113,10 +122,7 @@ function CompanyDashboardPage() {
             <Plus size={18} aria-hidden="true" /> Add designer
           </Link>
         </div>
-        <div className="mt-6 rounded-2xl border border-sage-200/60 p-8 text-center">
-          <Users size={32} className="mx-auto mb-4 text-sage-700" aria-hidden="true" />
-          <p className="text-ink/70">Designer listing is not available yet. Use Add designer to register a designer account.</p>
-        </div>
+        <CompanyDesignerTable designers={companyDesigners} loading={designersLoading} error={designersError} warning={designersWarning} onRetry={() => setDesignerRetry((value) => value + 1)} />
       </div>
     </section>
   );

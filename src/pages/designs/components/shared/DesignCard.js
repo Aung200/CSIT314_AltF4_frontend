@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { ArrowUpRight, ImageOff, MapPin } from "lucide-react";
 import FavouriteDesignButton from "./FavouriteDesignButton";
 
-function DesignCard({ design, categoryName, isFavourite = false }) {
+function DesignCard({ design, categoryName, isFavourite = false, favouriteId, onFavouriteRemoved }) {
   const detailsPath = `/designs/${encodeURIComponent(design.id)}`;
   const imageUrl = design.images?.[0]?.url;
   const [imageFailed, setImageFailed] = useState(false);
@@ -28,7 +28,7 @@ function DesignCard({ design, categoryName, isFavourite = false }) {
             </span>
           )}
         </Link>
-        <FavouriteDesignButton designId={design.id} title={design.title} isFavourite={isFavourite} />
+        <FavouriteDesignButton designId={design.id} title={design.title} isFavourite={isFavourite} favouriteId={favouriteId} onFavouriteRemoved={onFavouriteRemoved} />
       </div>
       <div className="flex flex-1 flex-col p-5">
         <div className="mb-5">

@@ -23,7 +23,7 @@ const periods = [
   { value: 0, label: "All time" },
 ];
 
-function DesignStatistics({ companyId }) {
+function DesignStatistics() {
   const { isLoggedIn, role, profile } = useAuth();
   const [views, setViews] = useState([]);
   const [days, setDays] = useState(30);
@@ -34,7 +34,7 @@ function DesignStatistics({ companyId }) {
   const [detailsLoading, setDetailsLoading] = useState(false);
   const [loadedAt, setLoadedAt] = useState(Date.now);
   const userId = profile?.id;
-  const allowed = isLoggedIn && [1, 2, 3].includes(role) && Boolean(userId) && (role !== 2 || Boolean(companyId));
+  const allowed = isLoggedIn && [1, 2, 3].includes(role) && Boolean(userId);
 
   useEffect(() => {
     if (!allowed) return;
@@ -56,9 +56,9 @@ function DesignStatistics({ companyId }) {
     };
     loadViews();
     return () => { active = false; };
-  }, [allowed, role, userId, companyId, retry]);
+  }, [allowed, role, userId, retry]);
 
-  const stats = useMemo(() => getDesignViewStats(views, { role, userId, companyId, days, now: loadedAt }), [views, role, userId, companyId, days, loadedAt]);
+  const stats = useMemo(() => getDesignViewStats(views, { role, userId, days, now: loadedAt }), [views, role, userId, days, loadedAt]);
   const topIds = stats.topDesigns.map(({ id }) => id).join(",");
 
   useEffect(() => {

@@ -2,7 +2,7 @@ const dayMilliseconds = 24 * 60 * 60 * 1000;
 const singaporeOffset = 8 * 60 * 60 * 1000;
 const dateKey = (time) => new Date(time + singaporeOffset).toISOString().slice(0, 10);
 
-export default function getDesignViewStats(views, { role, userId, companyId, days = 30, now = Date.now() }) {
+export default function getDesignViewStats(views, { role, userId, days = 30, now = Date.now() }) {
   const today = Date.parse(`${dateKey(now)}T00:00:00+08:00`);
   const chartDays = days || 30;
   const chartStart = today - (chartDays - 1) * dayMilliseconds;
@@ -16,7 +16,7 @@ export default function getDesignViewStats(views, { role, userId, companyId, day
     if (!view?.id || !view.design_id || seen.has(view.id)) continue;
     seen.add(view.id);
     if (role === 3 && view.designer_id !== userId) continue;
-    if (role === 2 && (!companyId || view.company_id !== companyId)) continue;
+    if (role === 2 && (!userId || view.company_id !== userId)) continue;
     if (![1, 2, 3].includes(role)) continue;
     const timestamp = Date.parse(view.created_at);
     if (!Number.isFinite(timestamp) || timestamp < rangeStart || timestamp > now) continue;

@@ -28,10 +28,11 @@ function CustomerFavouriteDesigns() {
     const loadFavourites = async () => {
       setResult(null);
       try {
-        const response = await API.get_favourite_design_ids(userId);
+        const response = await API.get_user_favourites(userId);
         if (!active) return;
-        if (!Array.isArray(response.data) || response.data.some((id) => typeof id !== "string" || !id.trim())) throw new Error("Unexpected favourite response.");
-        const ids = [...new Set(response.data)];
+        if (!Array.isArray(response.data)) throw new Error("Unexpected favourite response.");
+        const favourites = [...new Map(response.data.map((item) => [item.design_id, item])).values()];
+        const ids = favourites.map((item) => item.design_id);
         const designs = [];
         // Keep requests bounded when a customer has many favourites.
         for (let start = 0; start < ids.length; start += 10) {
@@ -45,7 +46,7 @@ function CustomerFavouriteDesigns() {
             if (design?.id === batch[index] && typeof design.title === "string") designs.push(design);
           });
         }
-        setResult({ userId, designs, total: ids.length, unavailable: ids.length - designs.length });
+        setResult({ userId, designs, favourites, total: ids.length, unavailable: ids.length - designs.length });
       } catch (error) {
         if (active) setResult({ userId, error: getDesignError(error, "Unable to load your favourites. Please try again.") });
       }
@@ -53,6 +54,15 @@ function CustomerFavouriteDesigns() {
     loadFavourites();
     return () => { active = false; };
   }, [allowed, userId, retry]);
+
+  const removeSavedDesign = (designId) => {
+    setResult((current) => {
+      if (current?.userId !== userId || current.error) return current;
+      const favourites = current.favourites.filter((item) => item.design_id !== designId);
+      const designs = current.designs.filter((item) => item.id !== designId);
+      return { ...current, favourites, designs, total: favourites.length, unavailable: favourites.length - designs.length };
+    });
+  };
 
   if (!allowed) return null;
   const loading = !result || result.userId !== userId;
@@ -78,7 +88,7 @@ function CustomerFavouriteDesigns() {
       ) : <>
         {result.unavailable > 0 && <div role="status" className="mb-5 rounded-xl bg-sage-50 p-4 text-sm text-ink/70"><p>{result.unavailable} saved {result.unavailable === 1 ? "design could" : "designs could"} not be loaded. {result.designs.length ? "Your other favourites are shown below." : "The designs may be unavailable or temporarily unable to load."}</p><button type="button" onClick={() => setRetry((value) => value + 1)} className="mt-2 font-semibold text-sage-700 underline">Try again</button></div>}
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" aria-label="Favourite designs">
-          {result.designs.map((design) => <DesignCard key={design.id} design={design} isFavourite />)}
+          {result.designs.map((design) => <DesignCard key={design.id} design={design} isFavourite favouriteId={result.favourites.find((item) => item.design_id === design.id)?.id} onFavouriteRemoved={removeSavedDesign} />)}
         </div>
       </>}
     </section>

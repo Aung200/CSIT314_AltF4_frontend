@@ -34,6 +34,7 @@
 - As a logged-in customer, I want to view my saved designs in the dashboard so that I can revisit their details. (Favourite Design Listing)
 
 - As a logged-in customer, I want to add a design to my favourites from its card so that I can save ideas I like. (Add Favourite Design)
+- As a logged-in customer, I want to remove a saved design from my favourites so that I can keep my list relevant. (Remove Favourite Design)
 
 ### Company Directory
 
@@ -43,6 +44,8 @@
 - As a visitor or customer, I want to visit a company's website or contact it by email or phone so that I can learn more about its services. (Company Contact Details)
 
 ### Company Designer Management
+
+- As a company, I want to view my designers' names and emails so that I can identify who belongs to my company. (Company Designer Listing)
 
 - As a company, I want to register a designer using their email, first name, and last name so that they can join my company. (Designer Registration)
 - As a company, I want to see the server's registration confirmation or error message so that I know whether the designer account was created successfully. (Registration Feedback)
@@ -60,6 +63,7 @@
 ### Company Design Management
 
 - As a company, I want to create a design for a designer so that I can add work to their portfolio. (Company Design Creation)
+- As a company, I want to choose a designer by email when creating a design so that the work is assigned to the correct designer. (Designer Selection)
 - As a company, I want to search, edit, and delete designs so that I can keep the portfolio current. (Company Design Management)
 - As a company, I want to mark designs as Reviewing or Approved so that I can manage their review status. (Design Approval)
 - As a designer, I want to see my designs' review statuses so that I can track company approval. (Design Review Status)
@@ -93,6 +97,4 @@
 
 ## Features Not Yet Implemented
 
-- Company designer listing.
-- Dynamic company designer selection (design creation currently uses one temporary designer option).
-- Company management of designer accounts (editing and removal).
+- Favourite counts per design in designer, company, and platform management dashboards.

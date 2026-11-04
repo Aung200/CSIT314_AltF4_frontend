@@ -11,8 +11,8 @@ function get_designer_designs(designer_id, page = 1, page_size = 10, filters = {
   });
 }
 
-function get_company_designs(company_id, page = 1, page_size = 10, filters = {}) {
-  return client.get(`/interior-designs/company/${company_id}`, {
+function get_company_designs(user_id, page = 1, page_size = 10, filters = {}) {
+  return client.get(`/interior-designs/company/${user_id}`, {
     params: { page, page_size, ...filters },
   });
 }
@@ -29,8 +29,9 @@ function create_design_view(design_id) {
   return client.post("/views", { design_id });
 }
 
-function create_design(design, images) {
+function create_design(user_id, design, images) {
   const form = new FormData();
+  form.append("user_id", user_id);
   form.append("design", JSON.stringify(design));
   images.forEach((image) => form.append("images", image));
   return client.post("/interior-designs", form);
@@ -42,6 +43,12 @@ function update_design(design_id, design, images = [], remove_image_ids = []) {
   images.forEach((image) => form.append("images", image));
   remove_image_ids.forEach((id) => form.append("remove_image_ids", id));
   return client.patch(`/interior-designs/${design_id}`, form);
+}
+
+function update_design_status(design_id, status) {
+  return client.patch(`/interior-designs/${design_id}/update`, null, {
+    params: { status },
+  });
 }
 
 function delete_design(design_id) {
@@ -57,6 +64,7 @@ const DesignAPI = {
   get_design_views,
   create_design,
   update_design,
+  update_design_status,
   delete_design,
 };
 
