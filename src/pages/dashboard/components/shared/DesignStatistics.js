@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
 //components
+import FavouriteStatistics from "./FavouriteStatistics";
 import { ArrowUpRight, ChevronDown, Eye, Images, RefreshCw, TrendingUp } from "lucide-react";
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from "../../../../components/ui/dropdown-menu";
@@ -144,6 +145,7 @@ function DesignStatistics() {
         </section>
         </div>
       </>}
+      <FavouriteStatistics key={`${role}:${userId}`} days={days} refreshKey={retry} />
     </section>
   );
 }
