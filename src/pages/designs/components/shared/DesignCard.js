@@ -16,9 +16,9 @@ function DesignCard({ design, categoryName, isFavourite = false, favouriteId, on
   }, [imageUrl]);
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-sage-200/60 bg-white transition-shadow hover:shadow-md">
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-sage-200/60 bg-white transition-shadow hover:shadow-md">
       <div className="relative">
-        <Link to={detailsPath} aria-label={`View ${design.title}`} className="relative block aspect-[4/3] w-full overflow-hidden bg-sage-50">
+        <div className="relative block aspect-[4/3] w-full overflow-hidden bg-sage-50">
           {imageUrl && !imageFailed ? (
             <img src={imageUrl} alt="" loading="lazy" onError={() => setImageFailed(true)} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
           ) : (
@@ -27,7 +27,7 @@ function DesignCard({ design, categoryName, isFavourite = false, favouriteId, on
               <span className="text-sm">No photo available</span>
             </span>
           )}
-        </Link>
+        </div>
         <FavouriteDesignButton designId={design.id} title={design.title} isFavourite={isFavourite} favouriteId={favouriteId} onFavouriteRemoved={onFavouriteRemoved} />
       </div>
       <div className="flex flex-1 flex-col p-5">
@@ -42,7 +42,7 @@ function DesignCard({ design, categoryName, isFavourite = false, favouriteId, on
         </div>
         <div className="mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-sage-200/60 pt-4 text-sm">
           <p className="font-semibold text-ink">{design.budget == null ? "Budget not provided" : new Intl.NumberFormat("en-SG", { style: "currency", currency: "SGD" }).format(design.budget)}</p>
-          <Link to={detailsPath} aria-label={`View details for ${design.title}`} className="inline-flex items-center gap-1 font-semibold text-sage-700 hover:text-ink">View details <ArrowUpRight size={16} aria-hidden="true" /></Link>
+          <Link to={detailsPath} aria-label={`View details for ${design.title}`} className="inline-flex items-center gap-1 font-semibold text-sage-700 after:absolute after:inset-0 after:rounded-2xl hover:text-ink focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-inset focus-visible:after:ring-sage-700">View details <ArrowUpRight size={16} aria-hidden="true" /></Link>
         </div>
       </div>
     </article>

@@ -7,6 +7,7 @@ import { ArrowLeft, LoaderCircle, MapPin } from "lucide-react";
 import { ToastContainer, toast } from "react-toastify";
 import DesignImageGallery from "./DesignImageGallery";
 import DesignEnquiryForm from "./DesignEnquiryForm";
+import DesignCompanyDetails from "./DesignCompanyDetails";
 import RelatedDesigns from "./RelatedDesigns";
 
 //api
@@ -111,6 +112,7 @@ function DesignDetails({ designId }) {
                   {details.map(([label, value]) => <div key={label}><dt className="text-sm font-semibold text-sage-700">{label}</dt><dd className="mt-1 break-words text-sm text-ink">{value}</dd></div>)}
                 </dl>
               </section>
+              {design.company_id && <DesignCompanyDetails key={design.company_id} companyId={design.company_id} />}
               <DesignEnquiryForm designId={design.id} />
             </div>
           </div>
