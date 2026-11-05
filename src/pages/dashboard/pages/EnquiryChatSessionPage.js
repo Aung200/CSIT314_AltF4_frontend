@@ -40,6 +40,15 @@ function EnquiryChatSessionPage() {
   const [completionError, setCompletionError] = useState("");
   const [refreshing, setRefreshing] = useState(false);
   const [refreshError, setRefreshError] = useState("");
+  const [participantNames, setParticipantNames] = useState({ sessionKey: null, names: {} });
+  const recipientId = role === 3 ? enquiry?.user_id : enquiry?.designer_id;
+  const participantIds = loadedSessionKey === sessionKey && enquiry
+    ? [...new Set([recipientId, ...messages.map((message) => message.sender_id)]
+      .filter((id) => typeof id === "string" && id && id !== userId))].sort().join(",")
+    : "";
+  const names = participantNames.sessionKey === sessionKey ? participantNames.names : {};
+  const recipientName = names[recipientId] || participantIds.split(",").map((id) => names[id]).find(Boolean);
+  const recipientLabel = recipientName || recipientRole;
 
   useEffect(() => {
     let isActive = true;
@@ -110,6 +119,30 @@ function EnquiryChatSessionPage() {
       pollingRequestRef.current = null;
     };
   }, [userId, role, enquiryNumber, sessionKey, retry]);
+
+  useEffect(() => {
+    if (!participantIds || !userId || ![3, 4].includes(role)) return;
+    let active = true;
+    setParticipantNames({ sessionKey, names: {} });
+    const loadParticipantNames = async () => {
+      const ids = participantIds.split(",");
+      const results = await Promise.allSettled(ids.map((id) => API.getUserDetailsAPI(id)));
+      if (!active) return;
+      const loadedNames = {};
+      results.forEach((result, index) => {
+        if (result.status !== "fulfilled") return;
+        const user = result.value.data?.user ?? result.value.data;
+        if (user?.id !== ids[index]) return;
+        const name = [user.first_name, user.last_name]
+          .filter((part) => typeof part === "string" && part.trim())
+          .map((part) => part.trim()).join(" ");
+        if (name) loadedNames[user.id] = name;
+      });
+      setParticipantNames({ sessionKey, names: loadedNames });
+    };
+    loadParticipantNames();
+    return () => { active = false; };
+  }, [participantIds, sessionKey, userId, role, retry]);
 
   useEffect(() => {
     if (!loading && conversationRef.current) {
@@ -301,7 +334,7 @@ function EnquiryChatSessionPage() {
             <div className="min-w-0">
               <h2 className="break-words text-xl font-semibold text-ink">{enquiry.title}</h2>
               <p className="mt-1 break-words text-sm font-medium text-sage-700">{enquiry.company_name}</p>
-              <p className="mt-2 text-sm text-ink/70">Chat with the {recipientRole.toLowerCase()} about this design.</p>
+              <p className="mt-2 text-sm text-ink/70">Chat with <span className="capitalize">{recipientLabel}</span> about this design.</p>
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <EnquiryStatusBadge status={enquiry.status} />
@@ -339,8 +372,8 @@ function EnquiryChatSessionPage() {
                     return (
                       <li key={`${message.sender_id}-${message.created_at}-${index}`} className={`flex ${isOwnMessage ? "justify-end" : "justify-start"}`}>
                         <div className={`max-w-[85%] rounded-2xl px-4 py-3 shadow-sm sm:max-w-[75%] ${isOwnMessage ? "rounded-br-sm bg-sage-700 text-white" : "rounded-bl-sm border border-sage-200/60 bg-white text-ink"}`}>
-                          <p className={`mb-1 text-xs font-semibold ${isOwnMessage ? "text-white/80" : "text-sage-700"}`}>
-                            {isOwnMessage ? "You" : recipientRole}
+                          <p className={`mb-1 text-xs font-semibold capitalize ${isOwnMessage ? "text-white/80" : "text-sage-700"}`}>
+                            {isOwnMessage ? "You" : names[message.sender_id] || recipientRole}
                           </p>
                           <p className="whitespace-pre-wrap break-words text-sm">{message.message}</p>
                           <time dateTime={message.created_at} className={`mt-2 block text-right text-xs ${isOwnMessage ? "text-white/70" : "text-ink/60"}`}>
@@ -355,7 +388,7 @@ function EnquiryChatSessionPage() {
                 <div className="flex h-full flex-col items-center justify-center text-center">
                   <MessageCircle size={36} className="mb-4 text-sage-700" aria-hidden="true" />
                   <h3 className="text-lg font-semibold text-ink">No messages yet</h3>
-                  <p className="mt-2 text-sm text-ink/70">Your conversation with the {recipientRole.toLowerCase()} will appear here.</p>
+                  <p className="mt-2 text-sm text-ink/70">Your conversation with <span className="capitalize">{recipientLabel}</span> will appear here.</p>
                 </div>
               )}
             </div>
@@ -365,7 +398,7 @@ function EnquiryChatSessionPage() {
               </p>
             ) : (
               <form onSubmit={sendEnquiryMessage} aria-label="Send enquiry message" className="border-t border-sage-200/60 p-5">
-                <label htmlFor="enquiry-message" className="auth-label">Message to {recipientRole.toLowerCase()}</label>
+                <label htmlFor="enquiry-message" className="auth-label">Message to <span className="capitalize">{recipientLabel}</span></label>
                 <textarea
                   id="enquiry-message"
                   name="message"
