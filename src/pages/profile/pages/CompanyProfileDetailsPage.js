@@ -12,6 +12,9 @@ import API from "../../../api/api";
 //context
 import { useAuth } from "../../../context/AuthContext";
 
+//utils
+import formatName from "../../../utils/formatName";
+
 function CompanyProfileDetailsPage() {
   const { isLoggedIn, profile, logout } = useAuth();
   const navigate = useNavigate();
@@ -293,7 +296,7 @@ function CompanyProfileDetailsPage() {
                       {field.label}
                     </p>
                     <p className="mt-1 whitespace-pre-wrap break-words font-semibold text-ink">
-                      {profileDetails[field.name] ||
+                      {(field.name === "name" ? formatName(profileDetails[field.name]) : profileDetails[field.name]) ||
                         (field.name === "email" ? email : "") ||
                         "Not provided"}
                     </p>

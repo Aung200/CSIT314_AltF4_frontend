@@ -13,6 +13,9 @@ import API from "../../../api/api";
 //context
 import { useAuth } from "../../../context/AuthContext";
 
+//utils
+import formatName from "../../../utils/formatName";
+
 function ProfileDetailsPage() {
   const { isLoggedIn, profile, role } = useAuth();
   const [editing, setEditing] = useState(false);
@@ -227,7 +230,7 @@ function ProfileDetailsPage() {
                 <>
                   <p className="text-sm font-medium text-ink/70">First name</p>
                   <p className="mt-1 whitespace-pre-wrap break-words font-semibold text-ink">
-                    {profileDetails.first_name || "Not provided"}
+                    {formatName(profileDetails.first_name) || "Not provided"}
                   </p>
                 </>
               )}
@@ -253,7 +256,7 @@ function ProfileDetailsPage() {
                 <>
                   <p className="text-sm font-medium text-ink/70">Last name</p>
                   <p className="mt-1 whitespace-pre-wrap break-words font-semibold text-ink">
-                    {profileDetails.last_name || "Not provided"}
+                    {formatName(profileDetails.last_name) || "Not provided"}
                   </p>
                 </>
               )}

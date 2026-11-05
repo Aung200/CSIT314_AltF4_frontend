@@ -18,6 +18,7 @@ import {
 import API from "../../../../api/api";
 
 //utils
+import formatName from "../../../../utils/formatName";
 import normalizeStatus from "../../../../utils/normalizeStatus";
 
 function CompanyTable({ active = true }) {
@@ -199,7 +200,7 @@ function CompanyTable({ active = true }) {
             ) : companies?.length > 0 ? companies.map((company) => (
               <tr key={company.id || company.email}>
                 <td className="break-words border-t border-sage-200/60 px-2 py-3 text-ink/80 sm:px-3">{company.email || "Not provided"}</td>
-                <td className="break-words border-t border-sage-200/60 px-2 py-3 text-ink/80 sm:px-3">{company.name || "Not provided"}</td>
+                <td className="break-words border-t border-sage-200/60 px-2 py-3 text-ink/80 sm:px-3">{formatName(company.name) || "Not provided"}</td>
                 <td className="break-words border-t border-sage-200/60 px-2 py-3 text-ink/80 sm:px-3">{company.url || company.website || "Not provided"}</td>
                 <td className="break-words border-t border-sage-200/60 px-2 py-3 text-ink/80 sm:px-3">{company.phone || "Not provided"}</td>
                 <td className="break-words border-t border-sage-200/60 px-2 py-3 text-ink/80 sm:px-3">
@@ -215,7 +216,7 @@ function CompanyTable({ active = true }) {
                     <DropdownMenuTrigger asChild>
                       <button
                         type="button"
-                        aria-label={`Actions for ${company.name || company.email}`}
+                        aria-label={`Actions for ${formatName(company.name) || company.email}`}
                         disabled={company.id == null || updatingCompanyId != null}
                         className="inline-flex rounded-lg p-2 text-sage-700 transition-colors hover:bg-sage-100 disabled:opacity-50"
                       >
@@ -225,7 +226,7 @@ function CompanyTable({ active = true }) {
                     <DropdownMenuContent
                       align="end"
                       sideOffset={8}
-                      aria-label={`Change status for ${company.name || company.email}`}
+                      aria-label={`Change status for ${formatName(company.name) || company.email}`}
                       className="z-[60] w-48 rounded-2xl border-sage-200 p-2"
                     >
                       <DropdownMenuLabel className="px-3 py-2 text-xs uppercase tracking-wide text-ink/50">

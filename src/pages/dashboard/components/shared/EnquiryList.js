@@ -14,6 +14,7 @@ import API from "../../../../api/api";
 import { useAuth } from "../../../../context/AuthContext";
 
 //utils
+import formatName from "../../../../utils/formatName";
 import sortEnquiries from "../../../../utils/sortEnquiries";
 
 function EnquiryList({ active = true }) {
@@ -117,7 +118,7 @@ function EnquiryList({ active = true }) {
                       <h3 className="break-words text-lg font-semibold text-ink">{enquiry.title}</h3>
                       <EnquiryStatusBadge status={enquiry.status} />
                     </div>
-                    <p className="mt-1 break-words text-sm font-medium text-sage-700">{enquiry.company_name}</p>
+                    <p className="mt-1 break-words text-sm font-medium text-sage-700">{formatName(enquiry.company_name)}</p>
                   </div>
                 </div>
               </Link>

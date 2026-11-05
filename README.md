@@ -9,7 +9,7 @@
 ### Authentication and Profile Management
 
 4. As a customer, I want to register an account so that I can contact designers about their designs. (Customer Registration)
-5. As a company, I want to register an account so that I can join the platform. (Company Registration)
+5. As a company, I want to register an account and await Platform Management approval so that I can join the platform. (Company Registration)
 6. As a registered user, I want to log in and log out so that I can access my account. (Login and Logout)
 7. As a registered user, I want to manage my profile and password, including the personal information, company details, or designer biography and years of experience relevant to my account, so that my information remains accurate and up to date. (Profile Management)
 
@@ -53,7 +53,7 @@
 
 ### Company Design Management
 
-28. As a company, I want to create a design and assign one of my designers by email so that the work is added to the correct portfolio. (Company Design Creation and Assignment)
+28. As a company, I want to create a design and identify one of my designers by full name and email so that the work is assigned to the correct portfolio. (Company Design Creation and Assignment)
 29. As a company, I want to manage company designs so that I can keep the portfolio current. (Company Design Management)
 30. As a company, I want to mark designs as Reviewing or Approved so that I can manage their review status. (Design Approval)
 31. As a designer, I want to see my designs' review statuses so that I can track company approval. (Design Review Status)
@@ -135,7 +135,7 @@
 
 7. As a customer, I want to exchange messages with a named designer in a design enquiry so that I can discuss my renovation requirements. (Design Enquiry Messaging)
 8. As a customer, I want to see related designs in the same category on a design's details page so that I can explore similar ideas without starting another search. (Related Design Recommendations)
-9. As a company, I want to choose one of my designers by email when creating a design so that the project is assigned to the correct person in my team. (Company Designer Assignment)
+9. As a company, I want to choose one of my designers by full name and email when creating a design so that the project is assigned to the correct person in my team. (Company Designer Assignment)
 10. As a company, I want to mark designs as Reviewing or Approved so that I can control which projects are ready for publication. (Company Design Approval)
 11. As a customer, I want to view a design's details, photos, and assigned designer's information so that I can assess the project and learn about its designer. (Design Details)
 12. As a customer, I want to manage my favourite designs so that I can save and revisit ideas when comparing renovation options. (Favourite Design Management)

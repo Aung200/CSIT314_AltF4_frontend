@@ -15,6 +15,7 @@ import API from "../../../../api/api";
 import { useAuth } from "../../../../context/AuthContext";
 
 //utils
+import formatName from "../../../../utils/formatName";
 import getDesignError from "../../../../utils/getDesignError";
 import getDesignViewStats from "../../../../utils/getDesignViewStats";
 
@@ -138,7 +139,7 @@ function DesignStatistics() {
             return <li key={item.id} className="flex flex-wrap items-center gap-3 py-4">
               <span className="w-5 font-semibold text-sage-700">{index + 1}</span>
               {design?.images?.[0]?.url && <img src={design.images[0].url} alt="" loading="lazy" onError={(event) => { event.currentTarget.hidden = true; }} className="h-12 w-14 rounded-lg object-cover" />}
-              <div className="min-w-0 flex-1"><p className="break-words font-semibold text-ink">{design?.title || (detailsLoading ? "Loading design..." : "Design details unavailable")}</p>{item.designerName && <p className="mt-1 text-sm text-ink/60">{item.designerName}</p>}</div>
+              <div className="min-w-0 flex-1"><p className="break-words font-semibold text-ink">{design?.title || (detailsLoading ? "Loading design..." : "Design details unavailable")}</p>{item.designerName && <p className="mt-1 text-sm text-ink/60">{formatName(item.designerName)}</p>}</div>
               <div className="text-right"><p className="font-semibold text-sage-700">{item.views} {item.views === 1 ? "view" : "views"}</p>{design && <Link to={`/designs/${encodeURIComponent(item.id)}`} className="mt-1 inline-flex items-center gap-1 text-sm text-sage-700 hover:underline">View design <ArrowUpRight size={14} aria-hidden="true" /></Link>}</div>
             </li>;
           })}</ol>}
