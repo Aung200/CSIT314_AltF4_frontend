@@ -1,3 +1,6 @@
+//utils
+import formatName from "../../../../utils/formatName";
+
 function CompanyDesignerTable({ designers, loading, error, warning, onRetry }) {
   return (
     <div className="mt-6 overflow-x-auto rounded-2xl border border-sage-200/60" aria-busy={loading}>
@@ -11,7 +14,7 @@ function CompanyDesignerTable({ designers, loading, error, warning, onRetry }) {
           <thead className="bg-sage-50"><tr><th scope="col" className="px-5 py-4 font-semibold text-ink">Name</th><th scope="col" className="px-5 py-4 font-semibold text-ink">Email</th></tr></thead>
           <tbody>{designers.map((designer) => (
             <tr key={designer.id} className="border-t border-sage-200/60">
-              <td className="px-5 py-4 text-ink">{[designer.first_name, designer.last_name].filter(Boolean).join(" ") || designer.name || "Not provided"}</td>
+              <td className="px-5 py-4 text-ink">{formatName([designer.first_name, designer.last_name].filter(Boolean).join(" ") || designer.name) || "Not provided"}</td>
               <td className="break-all px-5 py-4 text-ink/70">{designer.email || "Not provided"}</td>
             </tr>
           ))}</tbody>

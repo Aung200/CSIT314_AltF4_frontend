@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import API from "../../../../api/api";
 
 //utils
+import formatName from "../../../../utils/formatName";
 import formatCreatedAt from "../../../../utils/formatCreatedAt";
 
 function CustomerTable({ active = true }) {
@@ -150,7 +151,7 @@ function CustomerTable({ active = true }) {
               <tr key={customer.id || customer.email}>
                 <td className="border-t border-sage-200/60 px-5 py-4 text-ink/80">{customer.email || "Not provided"}</td>
                 <td className="border-t border-sage-200/60 px-5 py-4 capitalize text-ink/80">
-                  {[customer.first_name, customer.last_name].filter(Boolean).join(" ").trim() || "Not provided"}
+                  {formatName([customer.first_name, customer.last_name].filter(Boolean).join(" ")) || "Not provided"}
                 </td>
                 <td className="border-t border-sage-200/60 px-5 py-4 text-ink/80">{customer.phone || "Not provided"}</td>
                 <td className="border-t border-sage-200/60 px-5 py-4 text-ink/80">{formatCreatedAt(customer.created_at)}</td>

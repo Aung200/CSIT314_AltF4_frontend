@@ -9,11 +9,11 @@ import AuthContext from "./AuthContextValue";
 
 //utils
 import getStoredProfile from "../utils/getStoredProfile";
+import getCompanyApprovalMessage from "../utils/getCompanyApprovalMessage";
 
 export { useAuth } from "../hooks/useAuth";
 
 export function AuthProvider({ children }) {
-  const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem("isLoggedIn") === "true");
   const [profile, setProfile] = useState(getStoredProfile);
   let role = null;
   try {
@@ -23,7 +23,14 @@ export function AuthProvider({ children }) {
     role = null;
   }
 
+  const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem("isLoggedIn") === "true"
+    && (role !== 2 || !getCompanyApprovalMessage(profile?.status)));
+
   function setLogin(user) {
+    if (Number(user?.role) === 2) {
+      const message = getCompanyApprovalMessage(user.status);
+      if (message) throw new Error(message);
+    }
     if (user) {
       localStorage.setItem("profile", JSON.stringify(user));
       localStorage.setItem("role", JSON.stringify(user.role));

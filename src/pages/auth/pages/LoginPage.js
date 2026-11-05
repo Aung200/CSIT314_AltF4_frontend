@@ -8,12 +8,18 @@ import { ToastContainer, toast } from "react-toastify";
 //api
 import API from "../../../api/api";
 
+//utils
+import getCompanyApprovalMessage from "../../../utils/getCompanyApprovalMessage";
+
 function LoginPage({onLogin}) {
   const [loading, setLoading] = useState(false);
+  const [approvalMessage, setApprovalMessage] = useState("");
   const navigate = useNavigate();
 
   const loginUser = async (event) => {
     event.preventDefault();
+    if (loading) return;
+    setApprovalMessage("");
     setLoading(true);
     const form = new FormData(event.currentTarget);
     const email = form.get("Email");
@@ -21,13 +27,28 @@ function LoginPage({onLogin}) {
 
     try {
       const response = await API.loginAPI(email, password);
-      onLogin(response.data.user);
-      setTimeout(() => {
-        navigate("/");
-      }, 1500);
+      let user = response.data?.user;
+      if (!user?.id || user.role == null) throw new Error("Your account details could not be loaded. Please try again.");
+      if (Number(user.role) === 2) {
+        const accountResponse = await API.getUserDetailsAPI(user.id);
+        const account = accountResponse.data?.user ?? accountResponse.data;
+        if (!account || account.id !== user.id || (account.role != null && Number(account.role) !== 2)) {
+          throw new Error("Your company approval could not be verified. Please try again.");
+        }
+        const status = account.status;
+        const message = getCompanyApprovalMessage(status);
+        if (message) {
+          setApprovalMessage(message);
+          toast.info(message, { autoClose: 7000 });
+          return;
+        }
+        user = { ...user, status };
+      }
+      onLogin(user);
+      navigate("/", { replace: true });
     } catch (error) {
       const message =
-        error.response?.data?.detail?.message ||
+        (typeof error.response?.data?.detail === "string" ? error.response.data.detail : error.response?.data?.detail?.message) ||
         error.response?.data?.message ||
         error.message ||
         "Unable to log in. Please try again.";
@@ -43,6 +64,7 @@ function LoginPage({onLogin}) {
       <p className="auth-eyebrow">Welcome back</p>
       <h1 id="login-title">Login</h1>
       <p className="mb-8 text-ink/70">Your next home project starts here.</p>
+      {approvalMessage && <p role="status" className="mb-6 rounded-xl border border-sage-200 bg-sage-50 p-4 text-sm text-ink">{approvalMessage}</p>}
       <form onSubmit={loginUser} className="space-y-5">
         <div>
           <label htmlFor="login-email" className="auth-label">

@@ -8,12 +8,18 @@ import { ToastContainer, toast } from "react-toastify";
 //api
 import API from "../../../api/api";
 
+//utils
+import getCompanyApprovalMessage from "../../../utils/getCompanyApprovalMessage";
+
 function CompanyRegisterPage({ onRegister }) {
   const [loading, setLoading] = useState(false);
+  const [approvalMessage, setApprovalMessage] = useState("");
   const navigate = useNavigate();
 
   const registerCompany = async (event) => {
     event.preventDefault();
+    if (loading) return;
+    setApprovalMessage("");
     setLoading(true);
     const form = new FormData(event.currentTarget);
     const name = form.get("name");
@@ -34,10 +40,16 @@ function CompanyRegisterPage({ onRegister }) {
         address,
         password,
       );
-      onRegister(response.data.company);
-      setTimeout(() => {
-        navigate("/");
-      }, 2000);
+      const company = response.data?.company;
+      const message = getCompanyApprovalMessage(company?.status);
+      if (message || !company?.id) {
+        const notice = message || "Your company registration was submitted. Please log in to check your account approval.";
+        setApprovalMessage(notice);
+        toast.info(notice, { autoClose: 7000 });
+        return;
+      }
+      onRegister({ ...company, role: 2 });
+      navigate("/", { replace: true });
     } catch (error) {
       const message =
         error.response?.data?.detail?.message ||
@@ -56,6 +68,7 @@ function CompanyRegisterPage({ onRegister }) {
       <p className="auth-eyebrow">For businesses</p>
       <h1 id="company-register-title">Register your company</h1>
       <p className="mb-8 text-ink/70">Create a company account on Houzz.</p>
+      {approvalMessage && <p role="status" className="mb-6 rounded-xl border border-sage-200 bg-sage-50 p-4 text-sm text-ink">{approvalMessage}</p>}
       <form onSubmit={registerCompany} className="space-y-5">
         <div>
           <label htmlFor="company-register-name" className="auth-label">

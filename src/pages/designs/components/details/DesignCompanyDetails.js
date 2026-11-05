@@ -8,6 +8,7 @@ import { ArrowUpRight, Building2, Mail, MapPin, Phone } from "lucide-react";
 import API from "../../../../api/api";
 
 //utils
+import formatName from "../../../../utils/formatName";
 import getDesignError from "../../../../utils/getDesignError";
 
 function DesignCompanyDetails({ companyId }) {
@@ -52,13 +53,13 @@ function DesignCompanyDetails({ companyId }) {
       {loading ? <p role="status" className="text-sm text-ink/70">Loading company details...</p> : error ? (
         <div role="alert" className="text-sm text-ink/70"><p>{error}</p><button type="button" onClick={() => setRetry((value) => value + 1)} className="mt-3 font-semibold text-sage-700 underline">Try again</button></div>
       ) : company && <>
-        <h3 className="break-words text-lg font-semibold text-ink">{company.name}</h3>
+        <h3 className="break-words text-lg font-semibold text-ink">{formatName(company.name)}</h3>
         <ul className="mt-5 space-y-3 text-sm text-ink/70">
           {company.email && <li><a href={`mailto:${company.email}`} className="flex items-start gap-2 hover:text-sage-700"><Mail size={16} aria-hidden="true" className="mt-0.5 shrink-0" /><span className="break-all">{company.email}</span></a></li>}
           {company.phone && <li><a href={`tel:${String(company.phone).replace(/[^+\d]/g, "")}`} className="flex items-start gap-2 hover:text-sage-700"><Phone size={16} aria-hidden="true" className="mt-0.5 shrink-0" /><span>{company.phone}</span></a></li>}
           {company.address && <li className="flex items-start gap-2"><MapPin size={16} aria-hidden="true" className="mt-0.5 shrink-0" /><span className="whitespace-pre-wrap break-words">{company.address}</span></li>}
         </ul>
-        {website && <a href={website} target="_blank" rel="noopener noreferrer" aria-label={`Visit ${company.name} website (opens in a new tab)`} className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-sage-700 hover:text-ink">Visit website <ArrowUpRight size={16} aria-hidden="true" /></a>}
+        {website && <a href={website} target="_blank" rel="noopener noreferrer" aria-label={`Visit ${formatName(company.name)} website (opens in a new tab)`} className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-sage-700 hover:text-ink">Visit website <ArrowUpRight size={16} aria-hidden="true" /></a>}
       </>}
     </section>
   );

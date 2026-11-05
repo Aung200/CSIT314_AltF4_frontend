@@ -14,6 +14,7 @@ import API from "../../../api/api";
 import { useAuth } from "../../../context/AuthContext";
 
 //utils
+import formatName from "../../../utils/formatName";
 import formatChatTime from "../../../utils/formatChatTime";
 
 function EnquiryChatSessionPage() {
@@ -136,7 +137,7 @@ function EnquiryChatSessionPage() {
         const name = [user.first_name, user.last_name]
           .filter((part) => typeof part === "string" && part.trim())
           .map((part) => part.trim()).join(" ");
-        if (name) loadedNames[user.id] = name;
+        if (name) loadedNames[user.id] = formatName(name);
       });
       setParticipantNames({ sessionKey, names: loadedNames });
     };
@@ -333,7 +334,7 @@ function EnquiryChatSessionPage() {
           <div className="mb-6 flex flex-wrap items-start justify-between gap-3 rounded-2xl border border-sage-200/60 p-5">
             <div className="min-w-0">
               <h2 className="break-words text-xl font-semibold text-ink">{enquiry.title}</h2>
-              <p className="mt-1 break-words text-sm font-medium text-sage-700">{enquiry.company_name}</p>
+              <p className="mt-1 break-words text-sm font-medium text-sage-700">{formatName(enquiry.company_name)}</p>
               <p className="mt-2 text-sm text-ink/70">Chat with <span className="capitalize">{recipientLabel}</span> about this design.</p>
             </div>
             <div className="flex flex-wrap items-center gap-3">

@@ -21,11 +21,11 @@ Paths below follow the backend specification. Parameter names inside braces can 
 
 | Method and endpoint | Frontend function | Purpose | Frontend call sites |
 | --- | --- | --- | --- |
-| `GET /users/id/{id}` | [`getUserDetailsAPI`](src/api/profileApi.js#L4) | Profile display, designer email lookup, assigned designer details, and chat participant names | [CompanyDashboardPage](src/pages/dashboard/pages/CompanyDashboardPage.js#L53), [ProfileDetailsPage](src/pages/profile/pages/ProfileDetailsPage.js#L40), [DesignDesignerDetails](src/pages/designs/components/details/DesignDesignerDetails.js#L27), [EnquiryChatSessionPage](src/pages/dashboard/pages/EnquiryChatSessionPage.js#L129) |
+| `GET /users/id/{id}` | [`getUserDetailsAPI`](src/api/profileApi.js#L4) | Profile display, designer email lookup, assigned designer details, and chat participant names | [CompanyDashboardPage](src/pages/dashboard/pages/CompanyDashboardPage.js#L53), [ProfileDetailsPage](src/pages/profile/pages/ProfileDetailsPage.js#L43), [DesignDesignerDetails](src/pages/designs/components/details/DesignDesignerDetails.js#L28), [EnquiryChatSessionPage](src/pages/dashboard/pages/EnquiryChatSessionPage.js#L130), [LoginPage](src/pages/auth/pages/LoginPage.js#L33) |
 | `POST /users/register` | [`registerUserAPI`](src/api/authApi.js#L11) | Customer registration | [RegisterPage](src/pages/auth/pages/RegisterPage.js#L26) |
-| `POST /users/login` | [`loginAPI`](src/api/authApi.js#L4) | Login | [LoginPage](src/pages/auth/pages/LoginPage.js#L23) |
-| `PUT /users/update/{id}` | [`updateUserProfileAPI`](src/api/profileApi.js#L8) | Personal profile management | [ProfileDetailsPage](src/pages/profile/pages/ProfileDetailsPage.js#L112) |
-| `PUT /users/update-password/{id}` | [`updatePasswordAPI`](src/api/authApi.js#L41) | Password changes for personal and company profiles | [CompanyProfileDetailsPage](src/pages/profile/pages/CompanyProfileDetailsPage.js#L161), [ProfileDetailsPage](src/pages/profile/pages/ProfileDetailsPage.js#L147) |
+| `POST /users/login` | [`loginAPI`](src/api/authApi.js#L4) | Login | [LoginPage](src/pages/auth/pages/LoginPage.js#L29) |
+| `PUT /users/update/{id}` | [`updateUserProfileAPI`](src/api/profileApi.js#L8) | Personal profile management | [ProfileDetailsPage](src/pages/profile/pages/ProfileDetailsPage.js#L115) |
+| `PUT /users/update-password/{id}` | [`updatePasswordAPI`](src/api/authApi.js#L41) | Password changes for personal and company profiles | [CompanyProfileDetailsPage](src/pages/profile/pages/CompanyProfileDetailsPage.js#L164), [ProfileDetailsPage](src/pages/profile/pages/ProfileDetailsPage.js#L150) |
 
 ### Companies
 
@@ -33,26 +33,26 @@ Paths below follow the backend specification. Parameter names inside braces can 
 | --- | --- | --- | --- |
 | `GET /companies/{user_id}/designers` | [`get_company_designers`](src/api/companyApi.js#L4) | Company designer listing and design assignment options | [CompanyDashboardPage](src/pages/dashboard/pages/CompanyDashboardPage.js#L44) |
 | `POST /companies/{user_id}/designers` | [`register_designer`](src/api/companyApi.js#L8) | Company registration of a designer | [CompanyDesignerRegistration](src/pages/dashboard/components/company/CompanyDesignerRegistration.js#L41) |
-| `GET /companies/{id}` | [`getCompanyDetailsAPI`](src/api/profileApi.js#L17) | Company profile and company details on a design | [DesignCompanyDetails](src/pages/designs/components/details/DesignCompanyDetails.js#L27), [CompanyProfileDetailsPage](src/pages/profile/pages/CompanyProfileDetailsPage.js#L53) |
-| `POST /companies/register` | [`registerCompanyAPI`](src/api/authApi.js#L21) | Company registration | [CompanyRegisterPage](src/pages/auth/pages/CompanyRegisterPage.js#L28) |
-| `PUT /companies/update/{id}` | [`updateCompanyProfileAPI`](src/api/profileApi.js#L21) | Company profile management | [CompanyProfileDetailsPage](src/pages/profile/pages/CompanyProfileDetailsPage.js#L126) |
+| `GET /companies/{id}` | [`getCompanyDetailsAPI`](src/api/profileApi.js#L17) | Company profile and company details on a design | [DesignCompanyDetails](src/pages/designs/components/details/DesignCompanyDetails.js#L28), [CompanyProfileDetailsPage](src/pages/profile/pages/CompanyProfileDetailsPage.js#L56) |
+| `POST /companies/register` | [`registerCompanyAPI`](src/api/authApi.js#L21) | Company registration | [CompanyRegisterPage](src/pages/auth/pages/CompanyRegisterPage.js#L34) |
+| `PUT /companies/update/{id}` | [`updateCompanyProfileAPI`](src/api/profileApi.js#L21) | Company profile management | [CompanyProfileDetailsPage](src/pages/profile/pages/CompanyProfileDetailsPage.js#L129) |
 
 ### Platform Management
 
 | Method and endpoint | Frontend function | Purpose | Frontend call sites |
 | --- | --- | --- | --- |
-| `GET /platform/customers` | [`get_customers`](src/api/platformApi.js#L4) | Platform customer listing and search | [CustomerTable](src/pages/dashboard/components/platform/CustomerTable.js#L33) |
-| `GET /platform/companies` | [`get_companies`](src/api/platformApi.js#L14) | Platform company listing and public company directory | [CompaniesPage](src/pages/companies/CompaniesPage.js#L36), [CompanyTable](src/pages/dashboard/components/platform/CompanyTable.js#L45) |
-| `PUT /platform/updateStatus` | [`update_company_status`](src/api/platformApi.js#L24) | Platform approval, rejection, or pending status for companies | [CompanyTable](src/pages/dashboard/components/platform/CompanyTable.js#L82) |
+| `GET /platform/customers` | [`get_customers`](src/api/platformApi.js#L4) | Platform customer listing and search | [CustomerTable](src/pages/dashboard/components/platform/CustomerTable.js#L34) |
+| `GET /platform/companies` | [`get_companies`](src/api/platformApi.js#L14) | Platform company listing and public company directory | [CompaniesPage](src/pages/companies/CompaniesPage.js#L36), [CompanyTable](src/pages/dashboard/components/platform/CompanyTable.js#L46) |
+| `PUT /platform/updateStatus` | [`update_company_status`](src/api/platformApi.js#L24) | Platform approval, rejection, or pending status for companies | [CompanyTable](src/pages/dashboard/components/platform/CompanyTable.js#L83) |
 
 ### Contact Designer
 
 | Method and endpoint | Frontend function | Purpose | Frontend call sites |
 | --- | --- | --- | --- |
-| `POST /contact/messages` | [`post_enquiry_message`](src/api/enquiryApi.js#L14) | Start an enquiry or send a reply | [EnquiryChatSessionPage](src/pages/dashboard/pages/EnquiryChatSessionPage.js#L177), [DesignEnquiryForm](src/pages/designs/components/details/DesignEnquiryForm.js#L51) |
-| `GET /contact/lookup` | [`get_user_enquiries`](src/api/enquiryApi.js#L4) | Customer/designer enquiry listing and enquiry lookup after submission | [EnquiryList](src/pages/dashboard/components/shared/EnquiryList.js#L45), [EnquiryChatSessionPage](src/pages/dashboard/pages/EnquiryChatSessionPage.js#L77), [DesignEnquiryForm](src/pages/designs/components/details/DesignEnquiryForm.js#L57) |
-| `GET /contact/{enquiry_id}/messages` | [`get_enquiry_messages`](src/api/enquiryApi.js#L10) | Conversation history and updates | [EnquiryChatSessionPage](src/pages/dashboard/pages/EnquiryChatSessionPage.js#L89) |
-| `PATCH /contact/{enquiry_id}/complete` | [`change_enquiry_status`](src/api/enquiryApi.js#L23) | Complete an enquiry | [EnquiryChatSessionPage](src/pages/dashboard/pages/EnquiryChatSessionPage.js#L277) |
+| `POST /contact/messages` | [`post_enquiry_message`](src/api/enquiryApi.js#L14) | Start an enquiry or send a reply | [EnquiryChatSessionPage](src/pages/dashboard/pages/EnquiryChatSessionPage.js#L178), [DesignEnquiryForm](src/pages/designs/components/details/DesignEnquiryForm.js#L51) |
+| `GET /contact/lookup` | [`get_user_enquiries`](src/api/enquiryApi.js#L4) | Customer/designer enquiry listing and enquiry lookup after submission | [EnquiryList](src/pages/dashboard/components/shared/EnquiryList.js#L46), [EnquiryChatSessionPage](src/pages/dashboard/pages/EnquiryChatSessionPage.js#L78), [DesignEnquiryForm](src/pages/designs/components/details/DesignEnquiryForm.js#L57) |
+| `GET /contact/{enquiry_id}/messages` | [`get_enquiry_messages`](src/api/enquiryApi.js#L10) | Conversation history and updates | [EnquiryChatSessionPage](src/pages/dashboard/pages/EnquiryChatSessionPage.js#L90) |
+| `PATCH /contact/{enquiry_id}/complete` | [`change_enquiry_status`](src/api/enquiryApi.js#L23) | Complete an enquiry | [EnquiryChatSessionPage](src/pages/dashboard/pages/EnquiryChatSessionPage.js#L278) |
 | `POST /contact/form` | [`submit_generic_form`](src/api/contactApi.js#L4) | Contact Us form | [ContactPage](src/pages/contact/ContactPage.js#L43) |
 
 ### Interior Designs
@@ -63,7 +63,7 @@ Paths below follow the backend specification. Parameter names inside braces can 
 | `POST /interior-designs` | [`create_design`](src/api/designApi.js#L32) | Company/designer design creation with photos | [DesignFormDialog](src/pages/dashboard/components/shared/DesignFormDialog.js#L158) |
 | `GET /interior-designs/company/{company_id}` | [`get_company_designs`](src/api/designApi.js#L14) | Company design management and favourite statistics scoping | [DesignerDesignTableContent](src/pages/dashboard/components/shared/DesignerDesignTableContent.js#L56), [FavouriteStatistics](src/pages/dashboard/components/shared/FavouriteStatistics.js#L20) |
 | `GET /interior-designs/designer/{designer_id}` | [`get_designer_designs`](src/api/designApi.js#L8) | Designer portfolio management and favourite statistics scoping | [DesignerDesignTableContent](src/pages/dashboard/components/shared/DesignerDesignTableContent.js#L57), [FavouriteStatistics](src/pages/dashboard/components/shared/FavouriteStatistics.js#L20) |
-| `GET /interior-designs/{design_id}` | [`get_design`](src/api/designApi.js#L20) | Design details, editing, saved designs, and statistics metadata | [CustomerFavouriteDesigns](src/pages/dashboard/components/customer/CustomerFavouriteDesigns.js#L40), [DesignFormDialog](src/pages/dashboard/components/shared/DesignFormDialog.js#L57), [DesignStatistics](src/pages/dashboard/components/shared/DesignStatistics.js#L72), [FavouriteStatistics](src/pages/dashboard/components/shared/FavouriteStatistics.js#L77), [DesignDetails](src/pages/designs/components/details/DesignDetails.js#L43) |
+| `GET /interior-designs/{design_id}` | [`get_design`](src/api/designApi.js#L20) | Design details, editing, saved designs, and statistics metadata | [CustomerFavouriteDesigns](src/pages/dashboard/components/customer/CustomerFavouriteDesigns.js#L40), [DesignFormDialog](src/pages/dashboard/components/shared/DesignFormDialog.js#L57), [DesignStatistics](src/pages/dashboard/components/shared/DesignStatistics.js#L73), [FavouriteStatistics](src/pages/dashboard/components/shared/FavouriteStatistics.js#L77), [DesignDetails](src/pages/designs/components/details/DesignDetails.js#L43) |
 | `DELETE /interior-designs/{design_id}` | [`delete_design`](src/api/designApi.js#L54) | Company/designer design removal | [DesignerDesignTableContent](src/pages/dashboard/components/shared/DesignerDesignTableContent.js#L155) |
 | `PATCH /interior-designs/{design_id}` | [`update_design`](src/api/designApi.js#L40) | Company/designer design editing and photo changes | [DesignFormDialog](src/pages/dashboard/components/shared/DesignFormDialog.js#L157) |
 | `PATCH /interior-designs/{design_id}/update` | [`update_design_status`](src/api/designApi.js#L48) | Company design review status: Reviewing or Approved | [DesignerDesignTableContent](src/pages/dashboard/components/shared/DesignerDesignTableContent.js#L174) |
@@ -82,7 +82,7 @@ Paths below follow the backend specification. Parameter names inside braces can 
 
 | Method and endpoint | Frontend function | Purpose | Frontend call sites |
 | --- | --- | --- | --- |
-| `GET /views` | [`get_design_views`](src/api/designApi.js#L24) | Platform/company/designer view statistics | [DesignStatistics](src/pages/dashboard/components/shared/DesignStatistics.js#L47) |
+| `GET /views` | [`get_design_views`](src/api/designApi.js#L24) | Platform/company/designer view statistics | [DesignStatistics](src/pages/dashboard/components/shared/DesignStatistics.js#L48) |
 | `POST /views` | [`create_design_view`](src/api/designApi.js#L28) | Record a detail-page visit by a guest or logged-in customer | [DesignDetails](src/pages/designs/components/details/DesignDetails.js#L74) |
 
 ### Favourites
@@ -118,6 +118,7 @@ These endpoints exist in the live specification, but have no request wrapper or 
 
 ## Request Flow Notes
 
+- **Company approval:** company login verifies the account status through `GET /users/id/{id}` before creating a frontend session. Pending and rejected companies stay on the login page. Company registration does not automatically log in an unapproved account. The company-details response does not include approval status.
 - **Designer details:** the design page fetches the assigned designer through `GET /users/id/{id}` using `design.designer_id`. Name and email are available; biography and years of experience are displayed only if the response supplies them. The checked response omits those extra fields.
 
 - **Company identity:** company-scoped frontend requests use the logged-in company account’s `profile.id`. The design-list endpoint still calls its path placeholder `company_id` in OpenAPI. This does not introduce a second frontend ID lookup.

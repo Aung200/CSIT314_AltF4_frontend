@@ -8,6 +8,7 @@ import { Briefcase, Mail, UserRound } from "lucide-react";
 import API from "../../../../api/api";
 
 //utils
+import formatName from "../../../../utils/formatName";
 import getDesignError from "../../../../utils/getDesignError";
 
 function DesignDesignerDetails({ designerId }) {
@@ -32,7 +33,7 @@ function DesignDesignerDetails({ designerId }) {
         }
         const details = user.designer ?? user;
         setDesigner({
-          name: [user.first_name, user.last_name].filter(Boolean).join(" ").trim() || user.name || "Designer",
+          name: formatName([user.first_name, user.last_name].filter(Boolean).join(" ") || user.name) || "Designer",
           email: user.email,
           experience: details.YoE,
           biography: details.biography,
