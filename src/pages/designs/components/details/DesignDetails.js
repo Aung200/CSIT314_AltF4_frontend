@@ -8,6 +8,7 @@ import { ToastContainer, toast } from "react-toastify";
 import DesignImageGallery from "./DesignImageGallery";
 import DesignEnquiryForm from "./DesignEnquiryForm";
 import DesignCompanyDetails from "./DesignCompanyDetails";
+import DesignDesignerDetails from "./DesignDesignerDetails";
 import RelatedDesigns from "./RelatedDesigns";
 
 //api
@@ -26,9 +27,11 @@ function DesignDetails({ designId }) {
   const [categoryName, setCategoryName] = useState("Not available");
   const [loading, setLoading] = useState(true);
   const [retry, setRetry] = useState(0);
+  const [descriptionExpanded, setDescriptionExpanded] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    setDescriptionExpanded(false);
   }, [designId]);
 
   useEffect(() => {
@@ -84,6 +87,8 @@ function DesignDetails({ designId }) {
     ["Last updated", formatDesignDate(design.update_at)],
   ] : [];
 
+  const hasLongDescription = Boolean(design?.description && (design.description.length > 420 || design.description.split("\n").length > 5));
+
   return (
     <section aria-labelledby="design-details-title" aria-busy={loading}>
       <ToastContainer />
@@ -97,24 +102,24 @@ function DesignDetails({ designId }) {
             <h1 id="design-details-title" className="break-words text-3xl sm:text-4xl">{design.title}</h1>
             {design.location && <p className="flex items-center gap-2 text-ink/70"><MapPin size={18} aria-hidden="true" />{design.location}</p>}
           </div>
-          <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
-            <div className="min-w-0 space-y-8">
-              <DesignImageGallery images={design.images || []} title={design.title} />
-              <section aria-labelledby="design-description-title" className="rounded-2xl border border-sage-200/60 bg-white p-5 sm:p-6">
-                <h2 id="design-description-title" className="mb-4 text-xl font-semibold text-ink">About this design</h2>
-                <p className="whitespace-pre-wrap break-words leading-relaxed text-ink/80">{design.description || "No description provided."}</p>
-              </section>
-            </div>
-            <div className="space-y-6">
-              <section aria-labelledby="design-information-title" className="rounded-2xl border border-sage-200/60 bg-white p-5 sm:p-6">
-                <h2 id="design-information-title" className="mb-5 text-xl font-semibold text-ink">Design information</h2>
-                <dl className="grid gap-5 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
-                  {details.map(([label, value]) => <div key={label}><dt className="text-sm font-semibold text-sage-700">{label}</dt><dd className="mt-1 break-words text-sm text-ink">{value}</dd></div>)}
-                </dl>
-              </section>
-              {design.company_id && <DesignCompanyDetails key={design.company_id} companyId={design.company_id} />}
-              <DesignEnquiryForm designId={design.id} />
-            </div>
+          <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+            <DesignImageGallery images={design.images || []} title={design.title} />
+            <section aria-labelledby="design-information-title" className="min-w-0 rounded-2xl border border-sage-200/60 bg-white p-5 sm:p-6">
+              <h2 id="design-information-title" className="mb-5 text-xl font-semibold text-ink">Design information</h2>
+              <dl className="grid gap-5 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+                {details.map(([label, value]) => <div key={label}><dt className="text-sm font-semibold text-sage-700">{label}</dt><dd className="mt-1 break-words text-sm text-ink">{value}</dd></div>)}
+              </dl>
+            </section>
+          </div>
+          <section aria-labelledby="design-description-title" className="mt-6 rounded-2xl border border-sage-200/60 bg-white p-5 sm:p-6">
+            <h2 id="design-description-title" className="mb-4 text-xl font-semibold text-ink">About this design</h2>
+            <p id="design-description" className={`whitespace-pre-wrap break-words leading-relaxed text-ink/80 ${hasLongDescription && !descriptionExpanded ? "line-clamp-4" : ""}`}>{design.description || "No description provided."}</p>
+            {hasLongDescription && <button type="button" aria-expanded={descriptionExpanded} aria-controls="design-description" onClick={() => setDescriptionExpanded((value) => !value)} className="mt-3 text-sm font-semibold text-sage-700 hover:underline">{descriptionExpanded ? "Show less" : "Read more"}</button>}
+          </section>
+          <div className="mt-6 grid items-start gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {design.designer_id && <div className="min-w-0"><DesignDesignerDetails key={design.designer_id} designerId={design.designer_id} /></div>}
+            {design.company_id && <div className="min-w-0"><DesignCompanyDetails key={design.company_id} companyId={design.company_id} /></div>}
+            <div className="min-w-0 md:col-span-2 lg:col-span-1"><DesignEnquiryForm designId={design.id} /></div>
           </div>
           {design.category_id && categoryName !== "Not available" && <RelatedDesigns designId={design.id} categoryId={design.category_id} categoryName={categoryName} />}
         </>

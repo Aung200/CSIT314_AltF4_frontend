@@ -17,7 +17,7 @@
 
 8. As a visitor or customer, I want to browse designs so that I can find inspiration for my home. (Design Browsing)
 9. As a visitor or customer, I want to search, filter, and sort designs so that I can find designs matching my preferences and budget. (Design Search and Filters)
-10. As a visitor or customer, I want to view a design's details and photos so that I can understand the project before making an enquiry. (Design Details)
+10. As a visitor or customer, I want to view a design's details, photos, and assigned designer's information so that I can understand the project and who created it before making an enquiry. (Design Details)
 11. As a visitor or customer, I want to see the company details and contact information on a design's page so that I can learn about the team behind the project. (Design Company Details)
 12. As a visitor or customer, I want to see related designs in the same category so that I can explore similar ideas. (Related Designs)
 13. As a designer, I want views to be recorded when guests or logged-in customers open my design details so that interest in my work can be tracked. (Design View Tracking)
@@ -63,7 +63,7 @@
 
 33. As a customer, I want to send an enquiry about a design so that I can discuss my project with the designer. (Design Enquiry)
 34. As a customer or designer, I want to view my ongoing and completed enquiries and their statuses so that I can track conversations and refer to previous discussions. (Enquiry Tracking and History)
-35. As a customer or designer, I want to exchange messages and see conversation updates so that we can discuss project requirements. (Enquiry Messaging)
+35. As a customer or designer, I want to exchange messages, identify participants by name, and see conversation updates so that we can discuss project requirements. (Enquiry Messaging)
 36. As a designer, I want to mark an enquiry as completed so that finished conversations can be closed. (Enquiry Completion)
 
 ### Platform Account Management
@@ -133,9 +133,9 @@
 
 ### 6 Additional User Stories
 
-7. As a customer, I want to exchange messages with a designer in a design enquiry so that I can discuss my renovation requirements. (Design Enquiry Messaging)
+7. As a customer, I want to exchange messages with a named designer in a design enquiry so that I can discuss my renovation requirements. (Design Enquiry Messaging)
 8. As a customer, I want to see related designs in the same category on a design's details page so that I can explore similar ideas without starting another search. (Related Design Recommendations)
 9. As a company, I want to choose one of my designers by email when creating a design so that the project is assigned to the correct person in my team. (Company Designer Assignment)
 10. As a company, I want to mark designs as Reviewing or Approved so that I can control which projects are ready for publication. (Company Design Approval)
-11. As a customer, I want to view a design's details and photos so that I can assess whether the project matches my preferences. (Design Details)
+11. As a customer, I want to view a design's details, photos, and assigned designer's information so that I can assess the project and learn about its designer. (Design Details)
 12. As a customer, I want to manage my favourite designs so that I can save and revisit ideas when comparing renovation options. (Favourite Design Management)
